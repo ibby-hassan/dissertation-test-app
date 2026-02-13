@@ -1,51 +1,55 @@
-// src/App.tsx
 import { useState } from "react";
 import WelcomePage from "./components/WelcomePage";
+import TutorialPage from "./components/TutorialPage";
+import QuestionTemplate from "./components/QuestionTemplate";
+import * as styles from "./App.css";
 
-// Define the shape of your user's session data
 interface UserData {
   version: 'A' | 'B' | null;
-  experience: string | null;
 }
 
-// Define valid stages for the app
-type AppStage = 'welcome' | 'test';
+type AppStage = 'welcome' | 'tutorial' | 'test';
 
 function App() {
   const [stage, setStage] = useState<AppStage>('welcome');
-  const [userData, setUserData] = useState<UserData>({ 
-    version: null, 
-    experience: null 
-  });
+  const [userData, setUserData] = useState<UserData>({ version: null });
+  const [currentQuestion, setCurrentQuestion] = useState(1);
 
-  const handleStartTest = (version: 'A' | 'B', experience: string) => {
-    setUserData({ version, experience });
+  const onStart = (version: 'A' | 'B') => {
+    setUserData({ version });
+    setStage('tutorial');
+  };
+
+  const handleTutorialComplete = () => {
     setStage('test');
-    console.log(`Starting Test - Version: ${version}, Experience: ${experience}`);
+    setCurrentQuestion(1);
+  };
+
+  const handleAnswer = (answer: string) => {
+    console.log(`User Answered Q${currentQuestion}: ${answer}`);
+    
+    if (currentQuestion < 30) {
+      setCurrentQuestion(prev => prev + 1);
+    } else {
+      alert("Test Complete!");
+    }
   };
 
   return (
-    <div>
+    <div className={styles.container}>
       {stage === 'welcome' && (
-        <WelcomePage onStart={handleStartTest} />
+        <WelcomePage onStart={onStart} />
+      )}
+
+      {stage === 'tutorial' && (
+        <TutorialPage onComplete={handleTutorialComplete} />
       )}
 
       {stage === 'test' && (
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'center', 
-          alignItems: 'center', 
-          height: '100vh', 
-          fontFamily: 'sans-serif' 
-        }}>
-          <div style={{ textAlign: 'center' }}>
-            <h1>Test Environment Active</h1>
-            <p>Version: <strong>{userData.version}</strong></p>
-            <p>Experience: {userData.experience}</p>
-            <br />
-            <em style={{ color: '#666' }}>Logic for the test questions will go here.</em>
-          </div>
-        </div>
+        <QuestionTemplate 
+          questionId={`Q${currentQuestion}`} // Note the Q prefix here
+          onAnswer={handleAnswer}
+        />
       )}
     </div>
   );
