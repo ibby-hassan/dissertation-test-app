@@ -8,7 +8,7 @@ interface UserData {
   version: 'A' | 'B' | null;
 }
 
-type AppStage = 'welcome' | 'tutorial' | 'test';
+type AppStage = 'welcome' | 'tutorial' | 'test' | 'complete';
 
 function App() {
   const [stage, setStage] = useState<AppStage>('welcome');
@@ -20,18 +20,34 @@ function App() {
     setStage('tutorial');
   };
 
+  // Logic to return to Welcome screen (only available from Tutorial)
+  const handleBackToWelcome = () => {
+    setStage('welcome');
+  };
+
   const handleTutorialComplete = () => {
     setStage('test');
     setCurrentQuestion(1);
   };
 
   const handleAnswer = (answer: string) => {
+    // TODO: Send 'answer' to Firestore here
     console.log(`User Answered Q${currentQuestion}: ${answer}`);
     
     if (currentQuestion < 30) {
       setCurrentQuestion(prev => prev + 1);
     } else {
-      alert("Test Complete!");
+      setStage('complete');
+    }
+  };
+
+  const getBasePath = (questionNum: number, version: 'A' | 'B') => {
+    const isEven = questionNum % 2 === 0;
+
+    if (version === 'A') {
+      return isEven ? "psvtr-new-normalised" : "psvtr-original-normalised";
+    } else {
+      return isEven ? "psvtr-original-normalised" : "psvtr-new-normalised";
     }
   };
 
@@ -42,14 +58,26 @@ function App() {
       )}
 
       {stage === 'tutorial' && (
-        <TutorialPage onComplete={handleTutorialComplete} />
+        <TutorialPage 
+          onComplete={handleTutorialComplete} 
+          onBack={handleBackToWelcome}
+        />
       )}
 
-      {stage === 'test' && (
+      {stage === 'test' && userData.version && (
         <QuestionTemplate 
-          questionId={`Q${currentQuestion}`} // Note the Q prefix here
+          key={currentQuestion}
+          questionId={`Q${currentQuestion}`} 
+          basePath={getBasePath(currentQuestion, userData.version)}
           onAnswer={handleAnswer}
         />
+      )}
+
+      {stage === 'complete' && (
+        <div style={{ textAlign: 'center', padding: '2rem' }}>
+          <h1 style={{ fontSize: '2rem', marginBottom: '1rem' }}>Test Complete</h1>
+          <p style={{ fontSize: '1.2rem' }}>Thank you for participating.</p>
+        </div>
       )}
     </div>
   );

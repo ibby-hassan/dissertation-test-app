@@ -1,3 +1,4 @@
+// src/components/styles/QuestionTemplate.css.ts
 import { style } from '@vanilla-extract/css';
 
 export const container = style({
@@ -5,63 +6,91 @@ export const container = style({
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'center',
-  gap: '3vh',
+  alignItems: 'center', 
+  gap: '2vh',
   fontFamily: 'serif',
   flex: 1,
-  padding: '3vh 0',
+  padding: '2vh 0',
 });
+
+// Constants for layout stability
+const ROW_HEIGHT = '16vh';
+const IMAGE_SIZE = '14vh';
 
 // --- ROW CONTAINERS ---
 export const row = style({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  gap: '2vw',
-  flexWrap: 'nowrap'
+  gap: '1vw',
+  flexWrap: 'nowrap',
+  height: ROW_HEIGHT,
+  width: '100%',
 });
 
 export const optionsRow = style({
   display: 'flex',
   justifyContent: 'center',
-  gap: '2vw',
+  gap: '1.5vw',
+  marginTop: '2vh',
+  minHeight: `calc(${IMAGE_SIZE} + 4vh)`,
 });
 
 // --- TEXT ELEMENTS ---
 export const connectorText = style({
-  fontSize: '1.5rem',
+  fontSize: '1.2rem',
   fontWeight: 'bold',
   color: '#000',
-  textTransform: 'capitalize',
-  margin: '0 10px'
+  textTransform: 'uppercase', 
+  margin: '0 0.5vw',
+  whiteSpace: 'nowrap',
 });
-
 
 export const letterLabel = style({
   display: 'block',
   textAlign: 'center',
-  marginBottom: '1vh',
-  fontSize: '1.25rem',
+  marginBottom: '0.5vh',
+  fontSize: '1.1rem',
   fontFamily: 'serif',
+  fontWeight: 'bold',
 });
 
 // --- IMAGES ---
 export const shapeImage = style({
-  maxHeight: '15vh',
-  height: '100%',
-  maxWidth: '100%',
-  aspectRatio: '1/1',
+  height: IMAGE_SIZE,
+  width: IMAGE_SIZE,
   objectFit: 'contain',
-  display: 'block'
+  display: 'block',
+  backgroundColor: 'transparent', 
+  flexShrink: 0,
+});
+
+// --- PLACEHOLDERS ---
+export const questionMarkPlaceholder = style({
+  height: IMAGE_SIZE,
+  width: IMAGE_SIZE,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  fontSize: '3rem',
+  fontWeight: 'bold',
+  color: '#cbd5e1',
+  border: '2px dashed #cbd5e1', 
+  borderRadius: '10px',
+  flexShrink: 0,
 });
 
 // --- INTERACTIVE ELEMENTS ---
 export const optionButton = style({
   background: 'none',
   border: '2px solid transparent',
-  padding: '5px',
+  padding: '0.5vh',
   borderRadius: '8px',
   cursor: 'pointer',
   transition: 'all 0.2s ease',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
   ':hover': {
     borderColor: '#3b82f6',
     backgroundColor: '#eff6ff'

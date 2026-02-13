@@ -5,9 +5,10 @@ import * as styles from './styles/TutorialPage.css';
 
 interface TutorialPageProps {
   onComplete: () => void;
+  onBack: () => void; // Added onBack prop
 }
 
-const TutorialPage: React.FC<TutorialPageProps> = ({ onComplete }) => {
+const TutorialPage: React.FC<TutorialPageProps> = ({ onComplete, onBack }) => {
   const [step, setStep] = useState(1);
 
   const handleNext = () => {
@@ -15,6 +16,14 @@ const TutorialPage: React.FC<TutorialPageProps> = ({ onComplete }) => {
       setStep(2);
     } else {
       onComplete();
+    }
+  };
+
+  const handlePrev = () => {
+    if (step === 2) {
+      setStep(1);
+    } else {
+      onBack(); // Return to Welcome Page
     }
   };
 
@@ -60,9 +69,16 @@ const TutorialPage: React.FC<TutorialPageProps> = ({ onComplete }) => {
         </>
       )}
 
-      <button className={styles.nextButton} onClick={handleNext}>
-        {step === 1 ? 'Next Example' : 'Start Test'}
-      </button>
+      {/* --- NAVIGATION BUTTONS --- */}
+      <div className={styles.buttonRow}>
+        <button className={styles.prevButton} onClick={handlePrev}>
+          {step === 1 ? 'Back' : 'Previous Example'}
+        </button>
+        
+        <button className={styles.nextButton} onClick={handleNext}>
+          {step === 1 ? 'Next Example' : 'Start Test'}
+        </button>
+      </div>
       
     </div>
   );

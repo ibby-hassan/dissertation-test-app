@@ -25,18 +25,35 @@ export const textBlock = style({
   fontSize: '1.2rem',
 })
 
-export const nextButton = style({
+// --- NEW BUTTON LAYOUT ---
+export const buttonRow = style({
+  display: 'flex',
+  gap: '1rem',
   marginTop: '1vh',
+});
+
+const baseButton = style({
   padding: '12px 30px',
   fontSize: '1.1rem',
   fontWeight: 'bold',
-  backgroundColor: '#3b82f6',
-  color: 'white',
   border: 'none',
   borderRadius: '8px',
   cursor: 'pointer',
   transition: 'background-color 0.2s',
+});
+
+export const nextButton = style([baseButton, {
+  backgroundColor: '#3b82f6',
+  color: 'white',
   ':hover': {
     backgroundColor: '#2563eb'
   }
-});
+}]);
+
+export const prevButton = style([baseButton, {
+  backgroundColor: '#e5e7eb', // Light gray
+  color: '#374151',
+  ':hover': {
+    backgroundColor: '#d1d5db'
+  }
+}]);

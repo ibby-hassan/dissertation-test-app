@@ -3,14 +3,14 @@ import React from 'react';
 import * as styles from './styles/QuestionTemplate.css';
 
 interface QuestionTemplateProps {
-  questionId: string; // e.g., "Q1", "T01"
-  basePath?: string;  // e.g., "psvtr-new-normalised"
+  questionId: string;
+  basePath?: string;
   onAnswer: (answer: string) => void;
 }
 
 const QuestionTemplate: React.FC<QuestionTemplateProps> = ({ 
   questionId, 
-  basePath = "psvtr-new-normalised", // Default
+  basePath = "psvtr-new-normalised", 
   onAnswer 
 }) => {
   
@@ -19,9 +19,7 @@ const QuestionTemplate: React.FC<QuestionTemplateProps> = ({
   const prefix = match ? match[1] : 'Q';
   const number = match ? parseInt(match[2], 10) : 0;
 
-  // Folder: T1 (No zero)
   const folderName = `${prefix}${number}`;
-  // File: T01 (Padded zero)
   const fileNamePrefix = `${prefix}${number.toString().padStart(2, '0')}`;
 
   const getPath = (suffix: string) => 
@@ -35,19 +33,19 @@ const QuestionTemplate: React.FC<QuestionTemplateProps> = ({
       
       {/* TOP ROW */}
       <div className={styles.row}>
-        <img src={getPath('Q-FROM')} alt="Original" className={styles.shapeImage} />
+        <img src={getPath('Q-FROM')} className={styles.shapeImage} />
         <span className={styles.connectorText}>IS ROTATED TO</span>
-        <img src={getPath('Q-TO')} alt="Rotated" className={styles.shapeImage} />
+        <img src={getPath('Q-TO')} className={styles.shapeImage} />
       </div>
 
-      <hr style={{ width: '60%', border: '0', borderTop: '1px solid #ccc', alignSelf: 'center' }} />
+      <hr style={{ width: '60%', border: '0', borderTop: '1px solid #e5e7eb', alignSelf: 'center' }} />
 
       {/* MIDDLE ROW */}
       <div className={styles.row}>
         <span className={styles.connectorText}>AS</span>
-        <img src={getPath('A-FROM')} alt="Target" className={styles.shapeImage} />
+        <img src={getPath('A-FROM')} className={styles.shapeImage} />
         <span className={styles.connectorText}>IS ROTATED TO</span>
-        <div style={{ textAlign: 'center', fontSize: '2rem', color: '#ccc' }}>?</div>
+        <div className={styles.questionMarkPlaceholder}>?</div>
       </div>
 
       {/* BOTTOM ROW */}
@@ -57,7 +55,6 @@ const QuestionTemplate: React.FC<QuestionTemplateProps> = ({
             <span className={styles.letterLabel}>{opt.toUpperCase()}</span>
             <img 
               src={getPath(`A-TO-${opt}`)} 
-              alt={`Option ${opt}`} 
               className={styles.shapeImage} 
             />
           </button>
