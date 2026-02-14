@@ -1,18 +1,15 @@
-// src/utils/testUtils.ts
 import { db } from "../firebase";
-import { doc, setDoc, collection, serverTimestamp } from "firebase/firestore";
+import { doc, setDoc, updateDoc, serverTimestamp } from "firebase/firestore";
 
 // --- CONSTANTS ---
 export const STORAGE_KEY = 'psvtr_study_state';
 
 // --- HELPERS ---
 
-// Generate a simple random ID
 export const generateUserId = () => {
   return 'user_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 };
 
-// Safely read initial state from local storage
 export const getSavedState = () => {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
@@ -23,6 +20,14 @@ export const getSavedState = () => {
     console.error("Error loading state from local storage:", err);
   }
   return null;
+};
+
+export const getDeviceType = () => {
+  const userAgent = navigator.userAgent;
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+  const isSmallScreen = window.innerWidth <= 768;
+  
+  return isMobile || isSmallScreen ? 'mobile' : 'desktop';
 };
 
 // Answer Key
@@ -42,17 +47,19 @@ export const initializeTestSession = async (
   username: string,
   version: 'A' | 'B'
 ) => {
+  const deviceType = getDeviceType();
+  const userAgent = navigator.userAgent;
+
   try {
-    // UNCOMMENT TO ENABLE FIREBASE
-    /*
     await setDoc(doc(db, "test_sessions", userId), {
       username,
       version,
+      deviceType,
+      userAgent,
+      status: 'in_progress', // Track status
       startedAt: serverTimestamp(),
     });
     console.log(`Session initialized for ${username} (${userId})`);
-    */
-    console.log(`[MOCK] Session initialized for ${username} (${userId}) - Version ${version}`);
   } catch (e) {
     console.error("Error initializing session: ", e);
   }
@@ -79,14 +86,25 @@ export const submitQuestionAnswer = async (
   };
 
   try {
-    // UNCOMMENT TO ENABLE FIREBASE
-    /*
+    // Save to sub-collection 'responses'
     const responseRef = doc(db, "test_sessions", userId, "responses", questionId);
     await setDoc(responseRef, payload);
     console.log(`Submitted answer for ${questionId}`);
-    */
-    console.log(`[MOCK] Submitted ${questionId}:`, payload);
   } catch (e) {
     console.error("Error submitting answer: ", e);
+  }
+};
+
+// NEW: Mark the test as finished
+export const finalizeTestSession = async (userId: string) => {
+  try {
+    const sessionRef = doc(db, "test_sessions", userId);
+    await updateDoc(sessionRef, {
+      status: 'completed',
+      completedAt: serverTimestamp()
+    });
+    console.log(`Session finalized for ${userId}`);
+  } catch (e) {
+    console.error("Error finalizing session: ", e);
   }
 };

@@ -3,11 +3,12 @@ import WelcomePage from "./components/WelcomePage";
 import TutorialPage from "./components/TutorialPage";
 import TestPage from "./components/TestPage";
 import TestComplete from "./components/TestComplete";
-import ImagePreloader from "./components/ImagePreloader"; // New Component
+import ImagePreloader from "./components/ImagePreloader";
 import * as styles from "./App.css";
 import { 
   initializeTestSession, 
   submitQuestionAnswer, 
+  finalizeTestSession,
   generateUserId, 
   getSavedState, 
   STORAGE_KEY 
@@ -57,7 +58,7 @@ function App() {
 
     setUserData(prev => ({ ...prev, username: finalUsername, version }));
     
-    // Initialize session in Firebase immediately (Parent Document)
+    // Initialize session in Firebase immediately
     if (userData.userId) {
       initializeTestSession(userData.userId, finalUsername, version);
     }
@@ -91,6 +92,10 @@ function App() {
     if (currentQuestion < 30) {
       setCurrentQuestion((prev: number) => prev + 1);
     } else {
+      // Test Complete - Finalize DB Entry
+      if (userData.userId) {
+        finalizeTestSession(userData.userId);
+      }
       setStage('complete');
     }
   };
