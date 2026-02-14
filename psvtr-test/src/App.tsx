@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import WelcomePage from "./components/WelcomePage";
 import TutorialPage from "./components/TutorialPage";
 import QuestionTemplate from "./components/QuestionTemplate";
@@ -10,17 +10,50 @@ interface UserData {
 
 type AppStage = 'welcome' | 'tutorial' | 'test' | 'complete';
 
-function App() {
-  const [stage, setStage] = useState<AppStage>('welcome');
-  const [userData, setUserData] = useState<UserData>({ version: null });
-  const [currentQuestion, setCurrentQuestion] = useState(1);
+const STORAGE_KEY = 'psvtr_study_state';
+const getSavedState = () => {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      return JSON.parse(saved);
+    }
+  } catch (err) {
+    console.error("Error loading state from local storage:", err);
+  }
+  return null;
+};
 
+function App() {
+  // --- STATE INITIALIZATION ---
+  const [stage, setStage] = useState<AppStage>(() => {
+    return getSavedState()?.stage || 'welcome';
+  });
+
+  const [userData, setUserData] = useState<UserData>(() => {
+    return getSavedState()?.userData || { version: null };
+  });
+
+  const [currentQuestion, setCurrentQuestion] = useState(() => {
+    return getSavedState()?.currentQuestion || 1;
+  });
+
+  // --- PERSISTENCE EFFECT ---
+  useEffect(() => {
+    const stateToSave = {
+      stage,
+      userData,
+      currentQuestion
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
+  }, [stage, userData, currentQuestion]);
+
+
+  // --- HANDLERS ---
   const onStart = (version: 'A' | 'B') => {
     setUserData({ version });
     setStage('tutorial');
   };
 
-  // Logic to return to Welcome screen (only available from Tutorial)
   const handleBackToWelcome = () => {
     setStage('welcome');
   };
@@ -35,7 +68,7 @@ function App() {
     console.log(`User Answered Q${currentQuestion}: ${answer}`);
     
     if (currentQuestion < 30) {
-      setCurrentQuestion(prev => prev + 1);
+      setCurrentQuestion((prev: number) => prev + 1);
     } else {
       setStage('complete');
     }
@@ -77,6 +110,7 @@ function App() {
         <div style={{ textAlign: 'center', padding: '2rem' }}>
           <h1 style={{ fontSize: '2rem', marginBottom: '1rem' }}>Test Complete</h1>
           <p style={{ fontSize: '1.2rem' }}>Thank you for participating.</p>
+          <p style={{ color: '#6b7280', marginTop: '1rem' }}>You may now close this window.</p>
         </div>
       )}
     </div>
