@@ -1,3 +1,4 @@
+// src/components/styles/TestComplete.css.ts
 import { style } from '@vanilla-extract/css';
 
 export const container = style({
@@ -26,4 +27,19 @@ export const subText = style({
   fontSize: '1rem',
   color: '#6b7280',
   marginTop: '1rem',
+});
+
+export const restartButton = style({
+  marginTop: '3rem',
+  padding: '10px 20px',
+  fontSize: '0.9rem',
+  color: '#ef4444',
+  backgroundColor: 'transparent',
+  border: '1px solid #ef4444',
+  borderRadius: '6px',
+  cursor: 'pointer',
+  transition: 'all 0.2s',
+  ':hover': {
+    backgroundColor: '#fee2e2',
+  }
 });

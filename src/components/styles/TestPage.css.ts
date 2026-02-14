@@ -24,7 +24,7 @@ export const container = style({
 
 export const header = style({
   textAlign: 'center',
-  marginBottom: '1vh', // Reduced slightly to tighten the group
+  marginBottom: '1vh',
 });
 
 export const questionNumber = style({
@@ -55,6 +55,10 @@ export const subText = style({
 export const footer = style({
   marginTop: '2vh',
   marginBottom: '2vh',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  gap: '1rem',
   '@media': {
     [mobile]: {
       width: '100%',
@@ -92,7 +96,19 @@ export const confirmButton = style({
   }
 });
 
-// --- LOADING SPINNER ---
+export const skipButton = style({
+  background: 'none',
+  border: 'none',
+  color: '#9ca3af',
+  textDecoration: 'underline',
+  cursor: 'pointer',
+  fontSize: '1rem',
+  padding: '5px',
+  ':hover': {
+    color: '#4b5563',
+  }
+});
+
 const spin = keyframes({
   '0%': { transform: 'rotate(0deg)' },
   '100%': { transform: 'rotate(360deg)' },

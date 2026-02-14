@@ -24,14 +24,12 @@ const TestPage: React.FC<TestPageProps> = ({
   const startTimeRef = useRef<number | null>(null);
 
   useEffect(() => {
-    // Reset state for new question
     setSelectedAnswer(null);
     setIsReady(false);
     startTimeRef.current = null;
   }, [questionId]);
 
   const handleImagesLoaded = () => {
-    // Only start the timer when all images are actually loaded
     startTimeRef.current = Date.now();
     setIsReady(true);
   };
@@ -41,6 +39,18 @@ const TestPage: React.FC<TestPageProps> = ({
       const endTime = Date.now();
       const timeTaken = endTime - startTimeRef.current;
       onConfirmAnswer(selectedAnswer, timeTaken);
+    }
+  };
+
+  const handleSkip = () => {
+    if (startTimeRef.current) {
+        const endTime = Date.now();
+        const timeTaken = endTime - startTimeRef.current;
+        // Submit "SKIPPED" as the answer
+        onConfirmAnswer("SKIPPED", timeTaken);
+    } else {
+        // If images hadn't loaded yet, time is 0
+        onConfirmAnswer("SKIPPED", 0);
     }
   };
 
@@ -78,6 +88,12 @@ const TestPage: React.FC<TestPageProps> = ({
         >
           Confirm Answer
         </button>
+
+        {isReady && (
+            <button className={styles.skipButton} onClick={handleSkip}>
+                Skip Question
+            </button>
+        )}
       </div>
 
     </div>
