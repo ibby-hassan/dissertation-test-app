@@ -6,8 +6,12 @@ export const STORAGE_KEY = 'psvtr_study_state';
 
 // --- HELPERS ---
 
-export const generateUserId = () => {
-  return 'user_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+export const generateUserId = (username: string = 'Anonymous') => {
+  const cleanName = username.trim().replace(/\s+/g, '-').toLowerCase();
+  const timestamp = Date.now().toString(36);
+  const randomPart = Math.random().toString(36).substring(2, 6);
+  
+  return `${cleanName}-${timestamp}-${randomPart}`;
 };
 
 export const getSavedState = () => {
@@ -41,10 +45,8 @@ const CORRECT_ANSWERS: Record<number, string> = {
 };
 
 // --- FIREBASE LOGIC ---
-
 export const initializeTestSession = async (
   userId: string,
-  username: string,
   version: 'A' | 'B'
 ) => {
   const deviceType = getDeviceType();
@@ -52,14 +54,13 @@ export const initializeTestSession = async (
 
   try {
     await setDoc(doc(db, "test_sessions", userId), {
-      username,
       version,
       deviceType,
       userAgent,
-      status: 'in_progress', // Track status
+      status: 'in_progress', 
       startedAt: serverTimestamp(),
     });
-    console.log(`Session initialized for ${username} (${userId})`);
+    console.log(`Session initialized: ${userId}`);
   } catch (e) {
     console.error("Error initializing session: ", e);
   }
@@ -67,7 +68,7 @@ export const initializeTestSession = async (
 
 export const submitQuestionAnswer = async (
   userId: string,
-  questionId: string,
+  questionId: string, 
   questionNumber: number,
   answer: string,
   timeTakenMs: number
@@ -75,8 +76,10 @@ export const submitQuestionAnswer = async (
   const correctAnswer = CORRECT_ANSWERS[questionNumber];
   const isCorrect = answer.toLowerCase() === correctAnswer;
 
+  const paddedQuestionId = `Q${questionNumber.toString().padStart(2, '0')}`;
+
   const payload = {
-    questionId,
+    questionId: paddedQuestionId, 
     questionNumber,
     userAnswer: answer,
     correctAnswer,
@@ -86,16 +89,14 @@ export const submitQuestionAnswer = async (
   };
 
   try {
-    // Save to sub-collection 'responses'
-    const responseRef = doc(db, "test_sessions", userId, "responses", questionId);
+    const responseRef = doc(db, "test_sessions", userId, "responses", paddedQuestionId);
     await setDoc(responseRef, payload);
-    console.log(`Submitted answer for ${questionId}`);
+    console.log(`Submitted answer for ${paddedQuestionId}`);
   } catch (e) {
     console.error("Error submitting answer: ", e);
   }
 };
 
-// NEW: Mark the test as finished
 export const finalizeTestSession = async (userId: string) => {
   try {
     const sessionRef = doc(db, "test_sessions", userId);

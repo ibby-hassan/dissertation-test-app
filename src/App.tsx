@@ -9,7 +9,7 @@ import {
   initializeTestSession, 
   submitQuestionAnswer, 
   finalizeTestSession,
-  generateUserId, 
+  generateUserId,
   getSavedState, 
   STORAGE_KEY 
 } from "./utils/testUtils";
@@ -32,7 +32,7 @@ function App() {
     const savedData = getSavedState()?.userData;
     return { 
       version: savedData?.version || null,
-      userId: savedData?.userId || generateUserId(),
+      userId: savedData?.userId || null,
       username: savedData?.username || null
     };
   });
@@ -55,13 +55,18 @@ function App() {
   // --- HANDLERS ---
   const onStart = (usernameInput: string, version: 'A' | 'B') => {
     const finalUsername = usernameInput.trim() === "" ? "Anonymous" : usernameInput;
-
-    setUserData(prev => ({ ...prev, username: finalUsername, version }));
     
-    // Initialize session in Firebase immediately
-    if (userData.userId) {
-      initializeTestSession(userData.userId, finalUsername, version);
-    }
+    // Generate ID NOW, using the username
+    const newUserId = generateUserId(finalUsername);
+
+    setUserData({ 
+      username: finalUsername, 
+      version, 
+      userId: newUserId 
+    });
+    
+    // Initialize session in Firebase
+    initializeTestSession(newUserId, version);
     
     setStage('tutorial');
   };
@@ -133,8 +138,6 @@ function App() {
             basePath={getBasePath(currentQuestion, userData.version)}
             onConfirmAnswer={handleAnswer}
           />
-          
-          {/* Background Preloader for NEXT question */}
           {currentQuestion < 30 && (
             <ImagePreloader 
               questionNum={currentQuestion + 1}
