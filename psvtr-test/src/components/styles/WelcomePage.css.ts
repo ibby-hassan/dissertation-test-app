@@ -1,5 +1,7 @@
 import { style } from '@vanilla-extract/css';
 
+const mobile = 'screen and (max-width: 768px)';
+
 export const container = style({
   display: 'flex',
   flexDirection: 'column',
@@ -12,20 +14,40 @@ export const container = style({
   borderRadius: '10px',
   boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
   border: '1px solid #e5e7eb',
-  maxWidth: '60%'
+  maxWidth: '60%',
+  '@media': {
+    [mobile]: {
+      maxWidth: '95%',
+      padding: '1.5rem',
+      gap: '2vh',
+    }
+  }
 });
 
 export const title = style({
   fontSize: '3rem',
   fontWeight: 'bold',
   marginBottom: '1vh',
+  '@media': {
+    [mobile]: {
+      fontSize: '1.8rem',
+      textAlign: 'center'
+    }
+  }
 });
 
 export const text = style({
   fontSize: '1.2rem',
   lineHeight: '1.25rem',
   textAlign: 'center',
-  maxWidth: '90%',
+  maxWidth: '75%',
+  '@media': {
+    [mobile]: {
+      maxWidth: '100%',
+      fontSize: '1rem',
+      lineHeight: '1.4rem'
+    }
+  }
 });
 
 // --- INPUT STYLES ---
@@ -34,8 +56,13 @@ export const inputContainer = style({
   flexDirection: 'column',
   gap: '0.5rem',
   width: '100%',
-  maxWidth: '45%',
+  maxWidth: '300px',
   margin: '1vh 0',
+  '@media': {
+    [mobile]: {
+      maxWidth: '100%',
+    }
+  }
 });
 
 export const label = style({
@@ -59,7 +86,7 @@ export const input = style({
 });
 
 export const helperText = style({
-  fontSize: '1rem',
+  fontSize: '0.85rem',
   color: '#6b7280',
   lineHeight: '1.4',
   marginTop: '0.2rem',
@@ -68,7 +95,14 @@ export const helperText = style({
 // --- BUTTONS ---
 export const buttonContainer = style({
   display: 'flex',
-  gap: '2rem',
+  gap: '1rem',
+  '@media': {
+    [mobile]: {
+      flexDirection: 'column',
+      width: '100%',
+      gap: '0.8rem'
+    }
+  }
 });
 
 const button = style({
@@ -84,6 +118,12 @@ const button = style({
     backgroundColor: '#9ca3af',
     cursor: 'not-allowed',
     transform: 'none'
+  },
+  '@media': {
+    [mobile]: {
+      width: '100%',
+      padding: '15px'
+    }
   }
 });
 
@@ -102,4 +142,5 @@ export const buttonB = style([button, {
 export const disclaimer = style({
   fontSize: '1rem',
   color: '#9ca3af',
+  textAlign: 'center'
 });

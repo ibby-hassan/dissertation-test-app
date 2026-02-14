@@ -1,5 +1,6 @@
-// src/components/styles/QuestionTemplate.css.ts
 import { style } from '@vanilla-extract/css';
+
+const mobile = 'screen and (max-width: 768px)';
 
 export const container = style({
   width: '100%',
@@ -9,8 +10,15 @@ export const container = style({
   alignItems: 'center', 
   gap: '2vh',
   fontFamily: 'serif',
-  flex: 1,
-  padding: '2vh 0',
+  // Removed flex: 1 to prevent unwanted stretching
+  padding: '1vh 0',
+  '@media': {
+    [mobile]: {
+      justifyContent: 'flex-start',
+      height: 'auto',
+      paddingBottom: '2rem',
+    }
+  }
 });
 
 // Constants for layout stability
@@ -26,6 +34,13 @@ export const row = style({
   flexWrap: 'nowrap',
   height: ROW_HEIGHT,
   width: '100%',
+  '@media': {
+    [mobile]: {
+      height: 'auto', 
+      gap: '2vw',
+      padding: '1vh 0',
+    }
+  }
 });
 
 export const optionsRow = style({
@@ -34,16 +49,31 @@ export const optionsRow = style({
   gap: '1.5vw',
   marginTop: '2vh',
   minHeight: `calc(${IMAGE_SIZE} + 4vh)`,
+  '@media': {
+    [mobile]: {
+      flexWrap: 'wrap',
+      gap: '10px',
+      marginTop: '1vh',
+    }
+  }
 });
 
 // --- TEXT ELEMENTS ---
 export const connectorText = style({
-  fontSize: '1.2rem',
+  fontSize: '1.1rem',
   fontWeight: 'bold',
   color: '#000',
   textTransform: 'uppercase', 
   margin: '0 0.5vw',
   whiteSpace: 'nowrap',
+  '@media': {
+    [mobile]: {
+      fontSize: '0.9rem',
+      margin: '0 5px',
+      whiteSpace: 'normal',
+      textAlign: 'center'
+    }
+  }
 });
 
 export const letterLabel = style({
@@ -63,6 +93,14 @@ export const shapeImage = style({
   display: 'block',
   backgroundColor: 'transparent', 
   flexShrink: 0,
+  '@media': {
+    [mobile]: {
+      width: '22vw', 
+      height: '22vw',
+      maxHeight: '120px',
+      maxWidth: '120px',
+    }
+  }
 });
 
 // --- PLACEHOLDERS ---
@@ -78,6 +116,15 @@ export const questionMarkPlaceholder = style({
   border: '2px dashed #cbd5e1', 
   borderRadius: '10px',
   flexShrink: 0,
+  '@media': {
+    [mobile]: {
+      width: '22vw',
+      height: '22vw',
+      maxHeight: '120px',
+      maxWidth: '120px',
+      fontSize: '2rem',
+    }
+  }
 });
 
 // --- INTERACTIVE ELEMENTS ---

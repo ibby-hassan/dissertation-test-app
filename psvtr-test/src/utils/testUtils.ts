@@ -2,6 +2,29 @@
 import { db } from "../firebase";
 import { doc, setDoc, collection, serverTimestamp } from "firebase/firestore";
 
+// --- CONSTANTS ---
+export const STORAGE_KEY = 'psvtr_study_state';
+
+// --- HELPERS ---
+
+// Generate a simple random ID
+export const generateUserId = () => {
+  return 'user_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+};
+
+// Safely read initial state from local storage
+export const getSavedState = () => {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      return JSON.parse(saved);
+    }
+  } catch (err) {
+    console.error("Error loading state from local storage:", err);
+  }
+  return null;
+};
+
 // Answer Key
 const CORRECT_ANSWERS: Record<number, string> = {
   1: 'b', 2: 'a', 3: 'a', 4: 'd', 5: 'b',
@@ -11,6 +34,8 @@ const CORRECT_ANSWERS: Record<number, string> = {
   21: 'a', 22: 'd', 23: 'd', 24: 'c', 25: 'd',
   26: 'c', 27: 'b', 28: 'e', 29: 'c', 30: 'e'
 };
+
+// --- FIREBASE LOGIC ---
 
 export const initializeTestSession = async (
   userId: string,
@@ -33,7 +58,6 @@ export const initializeTestSession = async (
   }
 };
 
-// Structure: test_sessions/{userId}/responses/{questionId}
 export const submitQuestionAnswer = async (
   userId: string,
   questionId: string,

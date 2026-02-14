@@ -3,8 +3,15 @@ import WelcomePage from "./components/WelcomePage";
 import TutorialPage from "./components/TutorialPage";
 import TestPage from "./components/TestPage";
 import TestComplete from "./components/TestComplete";
+import ImagePreloader from "./components/ImagePreloader"; // New Component
 import * as styles from "./App.css";
-import { initializeTestSession, submitQuestionAnswer } from "./utils/testUtils";
+import { 
+  initializeTestSession, 
+  submitQuestionAnswer, 
+  generateUserId, 
+  getSavedState, 
+  STORAGE_KEY 
+} from "./utils/testUtils";
 
 interface UserData {
   version: 'A' | 'B' | null;
@@ -13,25 +20,6 @@ interface UserData {
 }
 
 type AppStage = 'welcome' | 'tutorial' | 'test' | 'complete';
-
-const STORAGE_KEY = 'psvtr_study_state';
-
-// Helper to generate a simple random ID
-const generateUserId = () => {
-  return 'user_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-};
-
-const getSavedState = () => {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      return JSON.parse(saved);
-    }
-  } catch (err) {
-    console.error("Error loading state from local storage:", err);
-  }
-  return null;
-};
 
 function App() {
   // --- STATE INITIALIZATION ---
@@ -86,12 +74,12 @@ function App() {
     setCurrentQuestion(1);
   };
 
-  const handleAnswer = (answer: string, timeTaken: number) => {
+  const handleAnswer = async (answer: string, timeTaken: number) => {
     const questionId = `Q${currentQuestion}`;
     console.log(`User Answered ${questionId}: ${answer} in ${timeTaken}ms`);
     
     if (userData.userId && userData.version) {
-      submitQuestionAnswer(
+      await submitQuestionAnswer(
         userData.userId,
         questionId,
         currentQuestion,
@@ -131,14 +119,24 @@ function App() {
       )}
 
       {stage === 'test' && userData.version && (
-        <TestPage
-          key={currentQuestion}
-          questionId={`Q${currentQuestion}`}
-          questionNumber={currentQuestion}
-          totalQuestions={30}
-          basePath={getBasePath(currentQuestion, userData.version)}
-          onConfirmAnswer={handleAnswer}
-        />
+        <>
+          <TestPage
+            key={currentQuestion}
+            questionId={`Q${currentQuestion}`}
+            questionNumber={currentQuestion}
+            totalQuestions={30}
+            basePath={getBasePath(currentQuestion, userData.version)}
+            onConfirmAnswer={handleAnswer}
+          />
+          
+          {/* Background Preloader for NEXT question */}
+          {currentQuestion < 30 && (
+            <ImagePreloader 
+              questionNum={currentQuestion + 1}
+              basePath={getBasePath(currentQuestion + 1, userData.version)}
+            />
+          )}
+        </>
       )}
 
       {stage === 'complete' && (

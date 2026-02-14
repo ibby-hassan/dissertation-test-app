@@ -1,17 +1,30 @@
-import { style } from '@vanilla-extract/css';
+import { style, keyframes } from '@vanilla-extract/css';
+
+const mobile = 'screen and (max-width: 768px)';
 
 export const container = style({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
+  justifyContent: 'center',
   padding: '2vh 5vw',
   boxSizing: 'border-box',
-  gap: '2vh',
+  gap: '3vh',
+  width: '100%',
+  maxWidth: '1200px',
+  margin: '0 auto',
+  '@media': {
+    [mobile]: {
+      padding: '1vh 1rem',
+      justifyContent: 'flex-start',
+      minHeight: 'auto',
+    }
+  }
 });
 
 export const header = style({
   textAlign: 'center',
-  marginBottom: '2vh',
+  marginBottom: '1vh', // Reduced slightly to tighten the group
 });
 
 export const questionNumber = style({
@@ -20,6 +33,11 @@ export const questionNumber = style({
   color: '#374151',
   margin: 0,
   fontFamily: 'serif',
+  '@media': {
+    [mobile]: {
+      fontSize: '1.5rem'
+    }
+  }
 });
 
 export const subText = style({
@@ -27,11 +45,21 @@ export const subText = style({
   color: '#9ca3af',
   marginTop: '0.5vh',
   fontFamily: 'serif',
+  '@media': {
+    [mobile]: {
+      fontSize: '1rem'
+    }
+  }
 });
 
 export const footer = style({
   marginTop: '2vh',
-  marginBottom: '4vh',
+  marginBottom: '2vh',
+  '@media': {
+    [mobile]: {
+      width: '100%',
+    }
+  }
 });
 
 export const confirmButton = style({
@@ -55,5 +83,42 @@ export const confirmButton = style({
     '&:disabled:hover': {
       backgroundColor: '#cbd5e1',
     }
+  },
+  '@media': {
+    [mobile]: {
+      width: '100%',
+      padding: '15px'
+    }
   }
+});
+
+// --- LOADING SPINNER ---
+const spin = keyframes({
+  '0%': { transform: 'rotate(0deg)' },
+  '100%': { transform: 'rotate(360deg)' },
+});
+
+export const loaderContainer = style({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: '4rem 0',
+  width: '100%',
+});
+
+export const spinner = style({
+  border: '4px solid #f3f3f3',
+  borderTop: '4px solid #3b82f6',
+  borderRadius: '50%',
+  width: '50px',
+  height: '50px',
+  animation: `${spin} 1s linear infinite`,
+  marginBottom: '1rem',
+});
+
+export const loadingText = style({
+  color: '#6b7280',
+  fontSize: '1.1rem',
+  fontFamily: 'sans-serif',
 });

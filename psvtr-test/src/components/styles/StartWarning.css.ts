@@ -1,5 +1,7 @@
 import { style } from '@vanilla-extract/css';
 
+const mobile = 'screen and (max-width: 768px)';
+
 export const container = style({
   display: 'flex',
   flexDirection: 'column',
@@ -14,19 +16,35 @@ export const container = style({
   maxWidth: '50%',
   textAlign: 'center',
   fontFamily: 'sans-serif',
+  '@media': {
+    [mobile]: {
+      maxWidth: '95%',
+      padding: '1.5rem',
+    }
+  }
 });
 
 export const title = style({
-  fontSize: '2.5rem',
+  fontSize: '2rem',
   fontWeight: 'bold',
   color: '#dc2626',
   marginBottom: '1vh',
+  '@media': {
+    [mobile]: {
+      fontSize: '2rem'
+    }
+  }
 });
 
 export const text = style({
-  fontSize: '1.3rem',
+  fontSize: '1.1rem',
   color: '#374151',
   lineHeight: '1.5',
+  '@media': {
+    [mobile]: {
+      fontSize: '1.1rem'
+    }
+  }
 });
 
 export const boldText = style({
@@ -38,6 +56,12 @@ export const buttonRow = style({
   display: 'flex',
   gap: '1rem',
   marginTop: '2vh',
+  '@media': {
+    [mobile]: {
+      flexDirection: 'column',
+      width: '100%'
+    }
+  }
 });
 
 const baseButton = style({
@@ -48,6 +72,12 @@ const baseButton = style({
   borderRadius: '8px',
   cursor: 'pointer',
   transition: 'background-color 0.2s',
+  '@media': {
+    [mobile]: {
+      width: '100%',
+      padding: '15px'
+    }
+  }
 });
 
 export const cancelButton = style([baseButton, {

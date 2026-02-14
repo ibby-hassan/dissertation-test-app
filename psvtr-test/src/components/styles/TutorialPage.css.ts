@@ -1,5 +1,6 @@
-// src/components/styles/TutorialPage.css.ts
 import { style } from '@vanilla-extract/css';
+
+const mobile = 'screen and (max-width: 768px)';
 
 export const container = style({
   display: 'flex',
@@ -13,17 +14,33 @@ export const container = style({
   borderRadius: '10px',
   boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
   border: '1px solid #e5e7eb',
-  maxWidth: '60%'
+  maxWidth: '60%',
+  '@media': {
+    [mobile]: {
+      maxWidth: '95%',
+      padding: '1rem',
+    }
+  }
 })
 
 export const title = style({
   fontSize: '2rem',
   fontWeight: 'bold',
+  '@media': {
+    [mobile]: {
+      fontSize: '1.5rem',
+    }
+  }
 })
 
 export const textBlock = style({
-  fontSize: '1.3rem',
+  fontSize: '1.1rem',
   textAlign: 'center',
+  '@media': {
+    [mobile]: {
+      fontSize: '1rem',
+    }
+  }
 })
 
 // --- BUTTON LAYOUT ---
@@ -32,7 +49,13 @@ export const buttonRow = style({
   gap: '1rem',
   marginTop: '1vh',
   alignItems: 'center',
-  justifyContent: 'center'
+  justifyContent: 'center',
+  '@media': {
+    [mobile]: {
+      width: '100%',
+      flexDirection: 'column-reverse', // Prev/Next order
+    }
+  }
 });
 
 const baseButton = style({
@@ -43,6 +66,12 @@ const baseButton = style({
   borderRadius: '8px',
   cursor: 'pointer',
   transition: 'background-color 0.2s',
+  '@media': {
+    [mobile]: {
+      width: '100%',
+      padding: '15px'
+    }
+  }
 });
 
 export const nextButton = style([baseButton, {

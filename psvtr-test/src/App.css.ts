@@ -9,7 +9,8 @@ globalStyle('html, body', {
 export const container = style({
   height: '100vh',
   width: '100vw',
-  overflow: 'hidden', // No scrolling allowed
+  overflowX: 'hidden', // No scrolling allowed
+  overflowY: 'auto',
   fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
   backgroundColor: '#f9fafb',
   color: '#1f2937',
