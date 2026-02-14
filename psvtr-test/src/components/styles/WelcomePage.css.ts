@@ -55,6 +55,6 @@ export const buttonB = style([button, {
 }]);
 
 export const disclaimer = style({
-  fontSize: '1rem',
+  fontSize: '1.2rem',
   color: '#9ca3af',
 });

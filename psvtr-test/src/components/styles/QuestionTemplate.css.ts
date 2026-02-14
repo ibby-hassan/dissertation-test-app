@@ -92,10 +92,17 @@ export const optionButton = style({
   flexDirection: 'column',
   alignItems: 'center',
   ':hover': {
-    borderColor: '#3b82f6',
-    backgroundColor: '#eff6ff'
+    borderColor: '#93c5fd',
+    backgroundColor: '#f8fafc'
   },
   ':active': {
     transform: 'scale(0.98)'
   }
 });
+
+export const selectedOptionButton = style([optionButton, {
+  borderColor: '#2563eb',
+  backgroundColor: '#eff6ff',
+  transform: 'scale(1.02)',
+  boxShadow: '0 4px 6px -1px rgba(37, 99, 235, 0.1), 0 2px 4px -1px rgba(37, 99, 235, 0.06)'
+}]);

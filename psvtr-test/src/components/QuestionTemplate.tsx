@@ -6,12 +6,14 @@ interface QuestionTemplateProps {
   questionId: string;
   basePath?: string;
   onAnswer: (answer: string) => void;
+  selectedAnswer?: string | null; // NEW PROP
 }
 
 const QuestionTemplate: React.FC<QuestionTemplateProps> = ({ 
   questionId, 
   basePath = "psvtr-new-normalised", 
-  onAnswer 
+  onAnswer,
+  selectedAnswer
 }) => {
   
   // --- PATH LOGIC ---
@@ -33,9 +35,9 @@ const QuestionTemplate: React.FC<QuestionTemplateProps> = ({
       
       {/* TOP ROW */}
       <div className={styles.row}>
-        <img src={getPath('Q-FROM')} className={styles.shapeImage} />
+        <img src={getPath('Q-FROM')} className={styles.shapeImage} alt="" />
         <span className={styles.connectorText}>IS ROTATED TO</span>
-        <img src={getPath('Q-TO')} className={styles.shapeImage} />
+        <img src={getPath('Q-TO')} className={styles.shapeImage} alt="" />
       </div>
 
       <hr style={{ width: '60%', border: '0', borderTop: '1px solid #e5e7eb', alignSelf: 'center' }} />
@@ -43,22 +45,30 @@ const QuestionTemplate: React.FC<QuestionTemplateProps> = ({
       {/* MIDDLE ROW */}
       <div className={styles.row}>
         <span className={styles.connectorText}>AS</span>
-        <img src={getPath('A-FROM')} className={styles.shapeImage} />
+        <img src={getPath('A-FROM')} className={styles.shapeImage} alt="" />
         <span className={styles.connectorText}>IS ROTATED TO</span>
         <div className={styles.questionMarkPlaceholder}>?</div>
       </div>
 
       {/* BOTTOM ROW */}
       <div className={styles.optionsRow}>
-        {options.map((opt) => (
-          <button key={opt} className={styles.optionButton} onClick={() => onAnswer(opt)}>
-            <span className={styles.letterLabel}>{opt.toUpperCase()}</span>
-            <img 
-              src={getPath(`A-TO-${opt}`)} 
-              className={styles.shapeImage} 
-            />
-          </button>
-        ))}
+        {options.map((opt) => {
+          const isSelected = selectedAnswer === opt;
+          return (
+            <button 
+              key={opt} 
+              className={isSelected ? styles.selectedOptionButton : styles.optionButton} 
+              onClick={() => onAnswer(opt)}
+            >
+              <span className={styles.letterLabel}>{opt.toUpperCase()}</span>
+              <img 
+                src={getPath(`A-TO-${opt}`)} 
+                className={styles.shapeImage} 
+                alt={`Option ${opt}`}
+              />
+            </button>
+          );
+        })}
       </div>
 
     </div>

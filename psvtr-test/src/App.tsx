@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import WelcomePage from "./components/WelcomePage";
 import TutorialPage from "./components/TutorialPage";
-import QuestionTemplate from "./components/QuestionTemplate";
+import TestPage from "./components/TestPage"; // New Import
 import * as styles from "./App.css";
 
 interface UserData {
@@ -97,12 +97,15 @@ function App() {
         />
       )}
 
+      {/* Updated to use TestPage */}
       {stage === 'test' && userData.version && (
-        <QuestionTemplate 
+        <TestPage
           key={currentQuestion}
-          questionId={`Q${currentQuestion}`} 
+          questionId={`Q${currentQuestion}`}
+          questionNumber={currentQuestion}
+          totalQuestions={30}
           basePath={getBasePath(currentQuestion, userData.version)}
-          onAnswer={handleAnswer}
+          onConfirmAnswer={handleAnswer}
         />
       )}
 

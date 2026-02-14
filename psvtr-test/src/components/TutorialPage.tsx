@@ -1,21 +1,23 @@
 // src/components/TutorialPage.tsx
 import React, { useState } from 'react';
 import QuestionTemplate from './QuestionTemplate';
+import StartWarning from './StartWarning'; // New Import
 import * as styles from './styles/TutorialPage.css';
 
 interface TutorialPageProps {
   onComplete: () => void;
-  onBack: () => void; // Added onBack prop
+  onBack: () => void;
 }
 
 const TutorialPage: React.FC<TutorialPageProps> = ({ onComplete, onBack }) => {
   const [step, setStep] = useState(1);
+  const [showWarning, setShowWarning] = useState(false);
 
   const handleNext = () => {
     if (step === 1) {
       setStep(2);
     } else {
-      onComplete();
+      setShowWarning(true);
     }
   };
 
@@ -23,10 +25,21 @@ const TutorialPage: React.FC<TutorialPageProps> = ({ onComplete, onBack }) => {
     if (step === 2) {
       setStep(1);
     } else {
-      onBack(); // Return to Welcome Page
+      onBack(); 
     }
   };
 
+  // If in warning state, render the warning component instead of the tutorial
+  if (showWarning) {
+    return (
+      <StartWarning 
+        onCancel={() => setShowWarning(false)} 
+        onConfirm={onComplete} 
+      />
+    );
+  }
+
+  // Otherwise render the Tutorial flow
   return (
     <div className={styles.container}>
       
@@ -75,9 +88,15 @@ const TutorialPage: React.FC<TutorialPageProps> = ({ onComplete, onBack }) => {
           {step === 1 ? 'Back' : 'Previous Example'}
         </button>
         
-        <button className={styles.nextButton} onClick={handleNext}>
-          {step === 1 ? 'Next Example' : 'Start Test'}
-        </button>
+        {step === 1 ? (
+            <button className={styles.nextButton} onClick={handleNext}>
+                Next Example
+            </button>
+        ) : (
+            <button className={styles.startTestButton} onClick={handleNext}>
+                Start Test
+            </button>
+        )}
       </div>
       
     </div>
