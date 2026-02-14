@@ -1,16 +1,26 @@
 import { useState, useEffect } from "react";
 import WelcomePage from "./components/WelcomePage";
 import TutorialPage from "./components/TutorialPage";
-import TestPage from "./components/TestPage"; // New Import
+import TestPage from "./components/TestPage";
+import TestComplete from "./components/TestComplete";
 import * as styles from "./App.css";
+import { initializeTestSession, submitQuestionAnswer } from "./utils/testUtils";
 
 interface UserData {
   version: 'A' | 'B' | null;
+  userId: string | null;
+  username: string | null;
 }
 
 type AppStage = 'welcome' | 'tutorial' | 'test' | 'complete';
 
 const STORAGE_KEY = 'psvtr_study_state';
+
+// Helper to generate a simple random ID
+const generateUserId = () => {
+  return 'user_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+};
+
 const getSavedState = () => {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
@@ -30,7 +40,12 @@ function App() {
   });
 
   const [userData, setUserData] = useState<UserData>(() => {
-    return getSavedState()?.userData || { version: null };
+    const savedData = getSavedState()?.userData;
+    return { 
+      version: savedData?.version || null,
+      userId: savedData?.userId || generateUserId(),
+      username: savedData?.username || null
+    };
   });
 
   const [currentQuestion, setCurrentQuestion] = useState(() => {
@@ -49,8 +64,16 @@ function App() {
 
 
   // --- HANDLERS ---
-  const onStart = (version: 'A' | 'B') => {
-    setUserData({ version });
+  const onStart = (usernameInput: string, version: 'A' | 'B') => {
+    const finalUsername = usernameInput.trim() === "" ? "Anonymous" : usernameInput;
+
+    setUserData(prev => ({ ...prev, username: finalUsername, version }));
+    
+    // Initialize session in Firebase immediately (Parent Document)
+    if (userData.userId) {
+      initializeTestSession(userData.userId, finalUsername, version);
+    }
+    
     setStage('tutorial');
   };
 
@@ -63,10 +86,20 @@ function App() {
     setCurrentQuestion(1);
   };
 
-  const handleAnswer = (answer: string) => {
-    // TODO: Send 'answer' to Firestore here
-    console.log(`User Answered Q${currentQuestion}: ${answer}`);
+  const handleAnswer = (answer: string, timeTaken: number) => {
+    const questionId = `Q${currentQuestion}`;
+    console.log(`User Answered ${questionId}: ${answer} in ${timeTaken}ms`);
     
+    if (userData.userId && userData.version) {
+      submitQuestionAnswer(
+        userData.userId,
+        questionId,
+        currentQuestion,
+        answer,
+        timeTaken
+      );
+    }
+
     if (currentQuestion < 30) {
       setCurrentQuestion((prev: number) => prev + 1);
     } else {
@@ -97,7 +130,6 @@ function App() {
         />
       )}
 
-      {/* Updated to use TestPage */}
       {stage === 'test' && userData.version && (
         <TestPage
           key={currentQuestion}
@@ -110,11 +142,7 @@ function App() {
       )}
 
       {stage === 'complete' && (
-        <div style={{ textAlign: 'center', padding: '2rem' }}>
-          <h1 style={{ fontSize: '2rem', marginBottom: '1rem' }}>Test Complete</h1>
-          <p style={{ fontSize: '1.2rem' }}>Thank you for participating.</p>
-          <p style={{ color: '#6b7280', marginTop: '1rem' }}>You may now close this window.</p>
-        </div>
+        <TestComplete />
       )}
     </div>
   );

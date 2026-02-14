@@ -1,5 +1,5 @@
 // src/components/TestPage.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import QuestionTemplate from './QuestionTemplate';
 import * as styles from './styles/TestPage.css';
 
@@ -8,7 +8,7 @@ interface TestPageProps {
   questionNumber: number;
   totalQuestions: number;
   basePath: string;
-  onConfirmAnswer: (answer: string) => void;
+  onConfirmAnswer: (answer: string, timeTaken: number) => void;
 }
 
 const TestPage: React.FC<TestPageProps> = ({
@@ -19,10 +19,20 @@ const TestPage: React.FC<TestPageProps> = ({
   onConfirmAnswer
 }) => {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
+  const startTimeRef = useRef<number>(Date.now());
 
   useEffect(() => {
     setSelectedAnswer(null);
+    startTimeRef.current = Date.now();
   }, [questionId]);
+
+  const handleConfirm = () => {
+    if (selectedAnswer) {
+      const endTime = Date.now();
+      const timeTaken = endTime - startTimeRef.current;
+      onConfirmAnswer(selectedAnswer, timeTaken);
+    }
+  };
 
   return (
     <div className={styles.container}>
@@ -42,7 +52,7 @@ const TestPage: React.FC<TestPageProps> = ({
       <div className={styles.footer}>
         <button 
           className={styles.confirmButton} 
-          onClick={() => selectedAnswer && onConfirmAnswer(selectedAnswer)}
+          onClick={handleConfirm}
           disabled={!selectedAnswer}
         >
           Confirm Answer
