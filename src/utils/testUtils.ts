@@ -1,5 +1,5 @@
 import { db } from "../firebase";
-import { doc, setDoc, updateDoc, collection, getDocs, serverTimestamp } from "firebase/firestore";
+import { doc, setDoc, updateDoc, getDoc, serverTimestamp } from "firebase/firestore";
 
 // --- CONSTANTS ---
 export const STORAGE_KEY = 'psvtr_study_state';
@@ -59,6 +59,26 @@ export const initializeTestSession = async (
       userAgent,
       status: 'in_progress', 
       startedAt: serverTimestamp(),
+      // Initialize summary structure
+      summary: {
+        score_total: 0,      // Total Correct
+        total_answered: 0,   // Total Answered (excluding skips)
+        count_skipped: 0,
+        total_time_ms: 0,
+        score_shaded: 0,
+        score_lined: 0,
+        
+        // Tracking sums/counts for averages
+        sum_time_shaded: 0,
+        count_shaded: 0,
+        sum_time_lined: 0,
+        count_lined: 0,
+        
+        // Display averages
+        avg_time_total_ms: 0,
+        avg_time_shaded_ms: 0,
+        avg_time_lined_ms: 0
+      }
     });
     console.log(`Session initialized: ${userId}`);
   } catch (e) {
@@ -76,9 +96,11 @@ export const submitQuestionAnswer = async (
 ) => {
   const correctAnswer = CORRECT_ANSWERS[questionNumber];
   const isCorrect = answer.toLowerCase() === correctAnswer;
+  const isSkipped = answer === "SKIPPED";
 
   const paddedQuestionId = `Q${questionNumber.toString().padStart(2, '0')}`;
 
+  // 1. Save individual response
   const payload = {
     questionId: paddedQuestionId, 
     questionNumber,
@@ -91,76 +113,71 @@ export const submitQuestionAnswer = async (
   };
 
   try {
+    const sessionRef = doc(db, "test_sessions", userId);
     const responseRef = doc(db, "test_sessions", userId, "responses", paddedQuestionId);
+    
+    // Write response
     await setDoc(responseRef, payload);
-    console.log(`Submitted answer for ${paddedQuestionId} [${style}]`);
+
+    // 2. Fetch and Update Summary
+    const sessionSnap = await getDoc(sessionRef);
+    if (sessionSnap.exists()) {
+      const data = sessionSnap.data();
+      const s = data.summary || { 
+        score_total: 0, total_answered: 0, count_skipped: 0, total_time_ms: 0, 
+        score_shaded: 0, score_lined: 0, 
+        sum_time_shaded: 0, count_shaded: 0, sum_time_lined: 0, count_lined: 0 
+      };
+
+      // -- UPDATE METRICS --
+      
+      // Time is always tracked (even for skips)
+      s.total_time_ms = (s.total_time_ms || 0) + timeTakenMs;
+
+      if (isSkipped) {
+        s.count_skipped = (s.count_skipped || 0) + 1;
+      } else {
+        s.total_answered = (s.total_answered || 0) + 1;
+        if (isCorrect) s.score_total = (s.score_total || 0) + 1;
+      }
+
+      // Style specific tracking (track time/count for everything to get accurate averages)
+      if (style === 'shaded') {
+        s.sum_time_shaded = (s.sum_time_shaded || 0) + timeTakenMs;
+        s.count_shaded = (s.count_shaded || 0) + 1;
+        if (isCorrect && !isSkipped) s.score_shaded = (s.score_shaded || 0) + 1;
+      } else {
+        s.sum_time_lined = (s.sum_time_lined || 0) + timeTakenMs;
+        s.count_lined = (s.count_lined || 0) + 1;
+        if (isCorrect && !isSkipped) s.score_lined = (s.score_lined || 0) + 1;
+      }
+
+      // -- RECALCULATE AVERAGES --
+      const totalSeen = (s.total_answered || 0) + (s.count_skipped || 0);
+      s.avg_time_total_ms = totalSeen > 0 ? Math.round(s.total_time_ms / totalSeen) : 0;
+      
+      s.avg_time_shaded_ms = s.count_shaded > 0 ? Math.round(s.sum_time_shaded / s.count_shaded) : 0;
+      s.avg_time_lined_ms = s.count_lined > 0 ? Math.round(s.sum_time_lined / s.count_lined) : 0;
+
+      // Write summary back
+      await updateDoc(sessionRef, { summary: s });
+      console.log(`Updated summary for ${paddedQuestionId}`);
+    }
+
   } catch (e) {
     console.error("Error submitting answer: ", e);
   }
 };
 
-// MODIFIED: Calculate stats and finalize
+// Simplified Finalize - Summary is already up to date
 export const finalizeTestSession = async (userId: string) => {
   try {
-    // 1. Fetch all responses to calculate summary
-    const responsesRef = collection(db, "test_sessions", userId, "responses");
-    const snapshot = await getDocs(responsesRef);
-    
-    let totalScore = 0;
-    let shadedScore = 0;
-    let linedScore = 0;
-    
-    let totalTime = 0;
-    let shadedTime = 0;
-    let linedTime = 0;
-    
-    let shadedCount = 0;
-    let linedCount = 0;
-
-    snapshot.forEach((doc) => {
-      const data = doc.data();
-      if (data.userAnswer) {
-        if (data.isCorrect) {
-          totalScore++;
-          if (data.style === 'shaded') shadedScore++;
-          if (data.style === 'lined') linedScore++;
-        }
-
-        // Times
-        const time = data.timeTakenMs || 0;
-        totalTime += time;
-        
-        if (data.style === 'shaded') {
-          shadedTime += time;
-          shadedCount++;
-        } else if (data.style === 'lined') {
-          linedTime += time;
-          linedCount++;
-        }
-      }
-    });
-
-    const totalQuestions = snapshot.size || 30;
-    
-    const summary = {
-      score_total: totalScore,
-      score_shaded: shadedScore,
-      score_lined: linedScore,
-      avg_time_total_ms: totalQuestions > 0 ? Math.round(totalTime / totalQuestions) : 0,
-      avg_time_shaded_ms: shadedCount > 0 ? Math.round(shadedTime / shadedCount) : 0,
-      avg_time_lined_ms: linedCount > 0 ? Math.round(linedTime / linedCount) : 0,
-      total_time_ms: totalTime
-    };
-
-    // 2. Update the parent document
     const sessionRef = doc(db, "test_sessions", userId);
     await updateDoc(sessionRef, {
       status: 'completed',
-      completedAt: serverTimestamp(),
-      summary: summary
+      completedAt: serverTimestamp()
     });
-    
-    console.log(`Session finalized for ${userId} with summary:`, summary);
+    console.log(`Session finalized for ${userId}`);
   } catch (e) {
     console.error("Error finalizing session: ", e);
   }
