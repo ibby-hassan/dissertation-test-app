@@ -1,7 +1,6 @@
-// src/components/TestComplete.tsx
 import React, { useEffect, useState } from 'react';
 import * as styles from './styles/TestComplete.css';
-import { STORAGE_KEY, getSavedState } from '../utils/testUtils';
+import { STORAGE_KEY, RESET_COUNT_KEY, getSavedState } from '../utils/testUtils';
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase";
 
@@ -37,6 +36,8 @@ const TestComplete: React.FC = () => {
 
   const handleRestart = () => {
     localStorage.removeItem(STORAGE_KEY);
+    const currentCount = parseInt(localStorage.getItem(RESET_COUNT_KEY) || '0', 10);
+    localStorage.setItem(RESET_COUNT_KEY, (currentCount + 1).toString());
     window.location.reload();
   };
 
