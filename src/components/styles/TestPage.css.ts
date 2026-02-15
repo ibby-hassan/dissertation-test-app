@@ -7,17 +7,29 @@ export const container = style({
   flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'center',
+  backgroundColor: 'white',
+  borderRadius: '10px',
+  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+  border: '1px solid #e5e7eb',
+  
   padding: '2vh 5vw',
   boxSizing: 'border-box',
   gap: '3vh',
   width: '100%',
   maxWidth: '1200px',
   margin: '0 auto',
+  
   '@media': {
     [mobile]: {
-      padding: '1vh 1rem',
-      justifyContent: 'flex-start',
+      padding: '2vh 0',
       minHeight: 'auto',
+      marginTop: 'auto',
+      marginBottom: 'auto',
+      borderRadius: '0',
+      boxShadow: 'none',
+      border: 'none',
+      width: '90%',
+      gap: '1vh'
     }
   }
 });
@@ -103,7 +115,6 @@ export const skipButton = style({
   textDecoration: 'underline',
   cursor: 'pointer',
   fontSize: '1rem',
-  padding: '5px',
   ':hover': {
     color: '#4b5563',
   }

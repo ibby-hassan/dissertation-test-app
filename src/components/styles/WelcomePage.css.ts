@@ -15,11 +15,18 @@ export const container = style({
   boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
   border: '1px solid #e5e7eb',
   maxWidth: '60%',
+  
   '@media': {
     [mobile]: {
-      maxWidth: '95%',
-      padding: '1.5rem',
+      maxWidth: '90%',
+      width: '100%',
+      padding: '0',
       gap: '2vh',
+      borderRadius: '0',
+      boxShadow: 'none',
+      border: 'none',
+      marginTop: 'auto',
+      marginBottom: 'auto',
     }
   }
 });
@@ -28,9 +35,10 @@ export const title = style({
   fontSize: '3rem',
   fontWeight: 'bold',
   marginBottom: '1vh',
+  textAlign: 'center',
   '@media': {
     [mobile]: {
-      fontSize: '1.8rem',
+      fontSize: '1.75rem',
       textAlign: 'center'
     }
   }
@@ -38,25 +46,23 @@ export const title = style({
 
 export const text = style({
   fontSize: '1.2rem',
-  lineHeight: '1.25rem',
+  lineHeight: '1.75rem',
   textAlign: 'center',
   maxWidth: '75%',
   '@media': {
     [mobile]: {
       maxWidth: '100%',
       fontSize: '1rem',
-      lineHeight: '1.4rem'
+      lineHeight: '1.5rem'
     }
   }
 });
 
-// --- INPUT STYLES ---
 export const inputContainer = style({
   display: 'flex',
   flexDirection: 'column',
   gap: '0.5rem',
-  width: '100%',
-  maxWidth: '300px',
+  maxWidth: '75%',
   margin: '1vh 0',
   '@media': {
     [mobile]: {
@@ -66,7 +72,7 @@ export const inputContainer = style({
 });
 
 export const label = style({
-  fontSize: '1rem',
+  fontSize: '1.1rem',
   fontWeight: '600',
   color: '#374151',
   textAlign: 'left',
@@ -86,13 +92,12 @@ export const input = style({
 });
 
 export const helperText = style({
-  fontSize: '0.85rem',
+  fontSize: '1rem',
   color: '#6b7280',
   lineHeight: '1.4',
   marginTop: '0.2rem',
 });
 
-// --- BUTTONS ---
 export const buttonContainer = style({
   display: 'flex',
   gap: '1rem',

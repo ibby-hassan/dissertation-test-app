@@ -1,4 +1,3 @@
-// src/components/TestComplete.tsx
 import React from 'react';
 import * as styles from './styles/TestComplete.css';
 import { STORAGE_KEY } from '../utils/testUtils';

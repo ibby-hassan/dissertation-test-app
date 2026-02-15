@@ -18,14 +18,18 @@ export const container = style({
   fontFamily: 'sans-serif',
   '@media': {
     [mobile]: {
-      maxWidth: '95%',
-      padding: '1.5rem',
+      maxWidth: '90%',
+      height: '100vh',
+      padding: '0',
+      borderRadius: '0',
+      boxShadow: 'none',
+      border: 'none',
     }
   }
 });
 
 export const title = style({
-  fontSize: '2rem',
+  fontSize: '2.5rem',
   fontWeight: 'bold',
   color: '#dc2626',
   marginBottom: '1vh',
@@ -37,9 +41,10 @@ export const title = style({
 });
 
 export const text = style({
-  fontSize: '1.1rem',
+  fontSize: '1.2rem',
   color: '#374151',
-  lineHeight: '1.5',
+  lineHeight: '1.75',
+  width: '80%',
   '@media': {
     [mobile]: {
       fontSize: '1.1rem'
@@ -59,7 +64,8 @@ export const buttonRow = style({
   '@media': {
     [mobile]: {
       flexDirection: 'column',
-      width: '100%'
+      width: '100%',
+      gap: '1rem'
     }
   }
 });

@@ -1,5 +1,6 @@
-// src/components/styles/TestComplete.css.ts
 import { style } from '@vanilla-extract/css';
+
+const mobile = 'screen and (max-width: 768px)';
 
 export const container = style({
   display: 'flex',
@@ -9,6 +10,13 @@ export const container = style({
   padding: '2rem',
   textAlign: 'center',
   fontFamily: 'sans-serif',
+  '@media': {
+    [mobile]: {
+      height: '100vh',
+      width: '100%',
+      padding: '0',
+    }
+  }
 });
 
 export const title = style({

@@ -20,7 +20,6 @@ const TestPage: React.FC<TestPageProps> = ({
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [isReady, setIsReady] = useState(false);
   
-  // Timer ref - starts null, set only when images load
   const startTimeRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -46,10 +45,8 @@ const TestPage: React.FC<TestPageProps> = ({
     if (startTimeRef.current) {
         const endTime = Date.now();
         const timeTaken = endTime - startTimeRef.current;
-        // Submit "SKIPPED" as the answer
         onConfirmAnswer("SKIPPED", timeTaken);
     } else {
-        // If images hadn't loaded yet, time is 0
         onConfirmAnswer("SKIPPED", 0);
     }
   };
@@ -62,23 +59,34 @@ const TestPage: React.FC<TestPageProps> = ({
         <p className={styles.subText}>Select an option and confirm to proceed</p>
       </div>
 
-      {/* Show Loader until images report they are done */}
-      <div style={{ display: isReady ? 'block' : 'none', width: '100%', flex: 1 }}>
-        <QuestionTemplate 
-          questionId={questionId}
-          basePath={basePath}
-          onAnswer={setSelectedAnswer}
-          selectedAnswer={selectedAnswer}
-          onAllImagesLoaded={handleImagesLoaded}
-        />
-      </div>
-
-      {!isReady && (
-        <div className={styles.loaderContainer}>
-          <div className={styles.spinner}></div>
-          <p className={styles.loadingText}>Loading Question...</p>
+      <div style={{ position: 'relative', width: '100%' }}>
+        {!isReady && (
+          <div className={styles.loaderContainer} style={{ 
+            position: 'absolute', 
+            top: 0, 
+            left: 0, 
+            right: 0, 
+            bottom: 0, 
+            zIndex: 10, 
+            backgroundColor: 'rgba(255,255,255,0.8)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            <div className={styles.spinner}></div>
+            <p className={styles.loadingText}>Loading Question...</p>
+          </div>
+        )}
+        <div style={{ width: '100%' }}> 
+          <QuestionTemplate 
+            questionId={questionId}
+            basePath={basePath}
+            onAnswer={setSelectedAnswer}
+            selectedAnswer={selectedAnswer}
+            onAllImagesLoaded={handleImagesLoaded}
+          />
         </div>
-      )}
+      </div>
 
       <div className={styles.footer}>
         <button 
@@ -89,11 +97,13 @@ const TestPage: React.FC<TestPageProps> = ({
           Confirm Answer
         </button>
 
-        {isReady && (
-            <button className={styles.skipButton} onClick={handleSkip}>
-                Skip Question
-            </button>
-        )}
+        <button 
+            className={styles.skipButton} 
+            onClick={handleSkip}
+            disabled={!isReady}
+        >
+            Skip Question
+        </button>
       </div>
 
     </div>

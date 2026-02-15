@@ -14,7 +14,10 @@ const StartWarning: React.FC<StartWarningProps> = ({ onCancel, onConfirm }) => {
         You are about to begin the assessed portion of the study.
       </p>
       <p className={styles.text}>
-        Once you begin, you will start the clock. Each question will be independently timed. You can not go back to change answers once you move to the next question.
+        Once you begin, you will be timed for how long it takes you to complete each individual question. Once you submit an answer, you will not be able to go back. You may skip questions, but you will not be able to return to them.<br />
+        If, for whatever reason, you disconnect from the test, you may resume from where you left off. But please try to avoid this.<br />
+        <br />
+        If you are unsure about anything, please contact me immediately.
       </p>
       <p className={`${styles.text} ${styles.boldText}`}>
         Are you ready to begin?

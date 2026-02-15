@@ -1,3 +1,4 @@
+// src/components/styles/QuestionTemplate.css.ts
 import { style } from '@vanilla-extract/css';
 
 const mobile = 'screen and (max-width: 768px)';
@@ -10,22 +11,18 @@ export const container = style({
   alignItems: 'center', 
   gap: '2vh',
   fontFamily: 'serif',
-  // Removed flex: 1 to prevent unwanted stretching
   padding: '1vh 0',
+  minHeight: '40vh', 
   '@media': {
     [mobile]: {
-      justifyContent: 'flex-start',
-      height: 'auto',
-      paddingBottom: '2rem',
+      gap: '2vh'
     }
   }
 });
 
-// Constants for layout stability
 const ROW_HEIGHT = '16vh';
 const IMAGE_SIZE = '14vh';
 
-// --- ROW CONTAINERS ---
 export const row = style({
   display: 'flex',
   alignItems: 'center',
@@ -52,13 +49,12 @@ export const optionsRow = style({
   '@media': {
     [mobile]: {
       flexWrap: 'wrap',
-      gap: '10px',
-      marginTop: '1vh',
+      gap: '15px',
+      marginTop: '3vh',
     }
   }
 });
 
-// --- TEXT ELEMENTS ---
 export const connectorText = style({
   fontSize: '1.1rem',
   fontWeight: 'bold',
@@ -85,7 +81,6 @@ export const letterLabel = style({
   fontWeight: 'bold',
 });
 
-// --- IMAGES ---
 export const shapeImage = style({
   height: IMAGE_SIZE,
   width: IMAGE_SIZE,
@@ -103,7 +98,6 @@ export const shapeImage = style({
   }
 });
 
-// --- PLACEHOLDERS ---
 export const questionMarkPlaceholder = style({
   height: IMAGE_SIZE,
   width: IMAGE_SIZE,
@@ -127,7 +121,6 @@ export const questionMarkPlaceholder = style({
   }
 });
 
-// --- INTERACTIVE ELEMENTS ---
 export const optionButton = style({
   background: 'none',
   border: '2px solid transparent',

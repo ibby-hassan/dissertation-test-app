@@ -77,7 +77,7 @@ const TutorialPage: React.FC<TutorialPageProps> = ({ onComplete, onBack }) => {
           />
 
           <p className={styles.textBlock}>
-            When you are ready, click below to start the test.
+            When you are ready, click below to recieve final information regarding the test.
           </p>
         </>
       )}
@@ -93,8 +93,8 @@ const TutorialPage: React.FC<TutorialPageProps> = ({ onComplete, onBack }) => {
                 Next Example
             </button>
         ) : (
-            <button className={styles.startTestButton} onClick={handleNext}>
-                Start Test
+            <button className={styles.nextButton} onClick={handleNext}>
+                Continue
             </button>
         )}
       </div>

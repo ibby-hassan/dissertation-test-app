@@ -8,7 +8,7 @@ export const container = style({
   alignItems: 'center',
   justifyContent: 'center',
   fontFamily: 'serif',
-  gap: '1vh',
+  gap: '1.5vh',
   backgroundColor: 'white',
   padding: '2rem',
   borderRadius: '10px',
@@ -17,8 +17,14 @@ export const container = style({
   maxWidth: '60%',
   '@media': {
     [mobile]: {
-      maxWidth: '95%',
-      padding: '1rem',
+      maxWidth: '90%',
+      padding: '2vh',
+      borderRadius: '0',
+      boxShadow: 'none',
+      border: 'none',
+      marginTop: 'auto', 
+      marginBottom: 'auto',
+      minHeight: 'auto',
     }
   }
 })
@@ -34,16 +40,16 @@ export const title = style({
 })
 
 export const textBlock = style({
-  fontSize: '1.1rem',
+  fontSize: '1.25rem',
   textAlign: 'center',
   '@media': {
     [mobile]: {
-      fontSize: '1rem',
+      fontSize: '1.1rem',
+      lineHeight: '1.4'
     }
   }
 })
 
-// --- BUTTON LAYOUT ---
 export const buttonRow = style({
   display: 'flex',
   gap: '1rem',
@@ -53,7 +59,9 @@ export const buttonRow = style({
   '@media': {
     [mobile]: {
       width: '100%',
-      flexDirection: 'column-reverse', // Prev/Next order
+      flexDirection: 'column-reverse', 
+      marginTop: '2vh',
+      gap: '2vh',
     }
   }
 });
@@ -87,13 +95,5 @@ export const prevButton = style([baseButton, {
   color: '#374151',
   ':hover': {
     backgroundColor: '#d1d5db'
-  }
-}]);
-
-export const startTestButton = style([baseButton, {
-  backgroundColor: '#dc2626',
-  color: 'white',
-  ':hover': {
-    backgroundColor: '#b91c1c'
   }
 }]);

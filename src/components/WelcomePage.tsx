@@ -16,12 +16,13 @@ const WelcomePage: React.FC<WelcomePageProps> = ({ onStart }) => {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>PSVT:R Style Comparison Study</h1>
+      <h1 className={styles.title}>2667185H's Dissertation: How Effective is a Computer-Rendered Version of the PSVT:R?</h1>
       <p className={styles.text}>
-        Thank you for participating in this study. You will be asked to sit a spatial reasoning assessment, consisting of 30 questions.<br/>
-        Questions will alternate in visual style.<br/>
-        Please set aside 20 minutes to complete the assessment.<br/>
-        On selecting your test version, you will view two example questions, before conducting the test.
+        Welcome to my (Ibrahim Hassan's) honour's project study. <br/>
+        The Purdue Spatial Visualisation Test of Rotations (PSVT:R) test is a measure of spatial reasoning widely used in STEM education to measure students' ability to mentally manipulate 3D objects. Success with the PSVT:R has been shown to be a predictor of success in STEM fields.<br />
+        This study aims to evaluate rendering software I have developed, and provide insight towards test automation solutions.<br/>
+        <br />
+        On selecting your test version, you will view two example questions, before conducting the test. More information on the test specifics are ahead.
       </p>
 
       {/* Name Input */}
@@ -36,7 +37,7 @@ const WelcomePage: React.FC<WelcomePageProps> = ({ onStart }) => {
           onChange={(e) => setUsername(e.target.value)}
         />
         <p className={styles.helperText}>
-          Your name will only be used to rectify any corrupted data or errors which occur with the site.
+          You do not need to provide your name, it simply makes data parsing, cleaning, and error handling easier on my end.
         </p>
       </div>
 
