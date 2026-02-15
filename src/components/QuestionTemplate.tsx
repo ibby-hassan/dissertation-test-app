@@ -1,3 +1,4 @@
+// src/components/QuestionTemplate.tsx
 import React, { useState, useEffect } from 'react';
 import * as styles from './styles/QuestionTemplate.css';
 
@@ -7,6 +8,7 @@ interface QuestionTemplateProps {
   onAnswer: (answer: string) => void;
   selectedAnswer?: string | null;
   onAllImagesLoaded?: () => void;
+  readonly?: boolean; // NEW PROP
 }
 
 const QuestionTemplate: React.FC<QuestionTemplateProps> = ({ 
@@ -14,10 +16,10 @@ const QuestionTemplate: React.FC<QuestionTemplateProps> = ({
   basePath = "psvtr-new-normalised", 
   onAnswer,
   selectedAnswer,
-  onAllImagesLoaded
+  onAllImagesLoaded,
+  readonly = false
 }) => {
   
-  // --- IMAGE LOADING LOGIC ---
   const TOTAL_IMAGES = 8;
   const [loadedCount, setLoadedCount] = useState(0);
 
@@ -35,7 +37,6 @@ const QuestionTemplate: React.FC<QuestionTemplateProps> = ({
     });
   };
 
-  // --- PATH LOGIC ---
   const match = questionId.match(/([A-Z]+)(\d+)/);
   const prefix = match ? match[1] : 'Q';
   const number = match ? parseInt(match[2], 10) : 0;
@@ -45,14 +46,12 @@ const QuestionTemplate: React.FC<QuestionTemplateProps> = ({
 
   const getPath = (suffix: string) => 
     `/${basePath}/${folderName}/${fileNamePrefix}-${suffix}.png`;
-  // ------------------
 
   const options = ['a', 'b', 'c', 'd', 'e'];
 
   return (
     <div className={styles.container}>
       
-      {/* TOP ROW */}
       <div className={styles.row}>
         <img 
           src={getPath('Q-FROM')} 
@@ -71,7 +70,6 @@ const QuestionTemplate: React.FC<QuestionTemplateProps> = ({
 
       <hr style={{ width: '60%', border: '0', borderTop: '1px solid #e5e7eb', alignSelf: 'center' }} />
 
-      {/* MIDDLE ROW */}
       <div className={styles.row}>
         <span className={styles.connectorText}>AS</span>
         <img 
@@ -84,15 +82,24 @@ const QuestionTemplate: React.FC<QuestionTemplateProps> = ({
         <div className={styles.questionMarkPlaceholder}>?</div>
       </div>
 
-      {/* BOTTOM ROW */}
       <div className={styles.optionsRow}>
         {options.map((opt) => {
           const isSelected = selectedAnswer === opt;
+          
+          // Determine class based on readonly prop
+          let buttonClass = styles.optionButton;
+          if (readonly) {
+            buttonClass = styles.readOnlyOptionButton;
+          } else if (isSelected) {
+            buttonClass = styles.selectedOptionButton;
+          }
+
           return (
             <button 
               key={opt} 
-              className={isSelected ? styles.selectedOptionButton : styles.optionButton} 
-              onClick={() => onAnswer(opt)}
+              className={buttonClass} 
+              onClick={() => !readonly && onAnswer(opt)}
+              disabled={readonly}
             >
               <span className={styles.letterLabel}>{opt.toUpperCase()}</span>
               <img 

@@ -1,5 +1,5 @@
 import { db } from "../firebase";
-import { doc, setDoc, updateDoc, serverTimestamp } from "firebase/firestore";
+import { doc, setDoc, updateDoc, collection, getDocs, serverTimestamp } from "firebase/firestore";
 
 // --- CONSTANTS ---
 export const STORAGE_KEY = 'psvtr_study_state';
@@ -99,14 +99,68 @@ export const submitQuestionAnswer = async (
   }
 };
 
+// MODIFIED: Calculate stats and finalize
 export const finalizeTestSession = async (userId: string) => {
   try {
+    // 1. Fetch all responses to calculate summary
+    const responsesRef = collection(db, "test_sessions", userId, "responses");
+    const snapshot = await getDocs(responsesRef);
+    
+    let totalScore = 0;
+    let shadedScore = 0;
+    let linedScore = 0;
+    
+    let totalTime = 0;
+    let shadedTime = 0;
+    let linedTime = 0;
+    
+    let shadedCount = 0;
+    let linedCount = 0;
+
+    snapshot.forEach((doc) => {
+      const data = doc.data();
+      if (data.userAnswer) {
+        if (data.isCorrect) {
+          totalScore++;
+          if (data.style === 'shaded') shadedScore++;
+          if (data.style === 'lined') linedScore++;
+        }
+
+        // Times
+        const time = data.timeTakenMs || 0;
+        totalTime += time;
+        
+        if (data.style === 'shaded') {
+          shadedTime += time;
+          shadedCount++;
+        } else if (data.style === 'lined') {
+          linedTime += time;
+          linedCount++;
+        }
+      }
+    });
+
+    const totalQuestions = snapshot.size || 30;
+    
+    const summary = {
+      score_total: totalScore,
+      score_shaded: shadedScore,
+      score_lined: linedScore,
+      avg_time_total_ms: totalQuestions > 0 ? Math.round(totalTime / totalQuestions) : 0,
+      avg_time_shaded_ms: shadedCount > 0 ? Math.round(shadedTime / shadedCount) : 0,
+      avg_time_lined_ms: linedCount > 0 ? Math.round(linedTime / linedCount) : 0,
+      total_time_ms: totalTime
+    };
+
+    // 2. Update the parent document
     const sessionRef = doc(db, "test_sessions", userId);
     await updateDoc(sessionRef, {
       status: 'completed',
-      completedAt: serverTimestamp()
+      completedAt: serverTimestamp(),
+      summary: summary
     });
-    console.log(`Session finalized for ${userId}`);
+    
+    console.log(`Session finalized for ${userId} with summary:`, summary);
   } catch (e) {
     console.error("Error finalizing session: ", e);
   }

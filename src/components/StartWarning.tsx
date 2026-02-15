@@ -11,7 +11,7 @@ const StartWarning: React.FC<StartWarningProps> = ({ onCancel, onConfirm }) => {
     <div className={styles.container}>
       <h2 className={styles.title}>Important!</h2>
       <p className={styles.text}>
-        You are about to begin the assessed portion of the study.
+        You are about to begin the assessed portion of the study.<br />
       </p>
       <p className={styles.text}>
         Once you begin, you will be timed for how long it takes you to complete each individual question. Once you submit an answer, you will not be able to go back. You may skip questions, but you will not be able to return to them.<br />

@@ -1,6 +1,9 @@
+// src/components/styles/QuestionTemplate.css.ts
 import { style } from '@vanilla-extract/css';
 
 const mobile = 'screen and (max-width: 768px)';
+
+// ... (container, row, optionsRow, connectorText, letterLabel, shapeImage, questionMarkPlaceholder remain the same)
 
 export const container = style({
   width: '100%',
@@ -120,6 +123,7 @@ export const questionMarkPlaceholder = style({
   }
 });
 
+// INTERACTIVE BUTTON (Used in TestPage)
 export const optionButton = style({
   background: 'none',
   border: '2px solid transparent',
@@ -137,6 +141,17 @@ export const optionButton = style({
   ':active': {
     transform: 'scale(0.98)'
   }
+});
+
+export const readOnlyOptionButton = style({
+  background: 'none',
+  border: '2px solid transparent',
+  padding: '0.5vh',
+  borderRadius: '8px',
+  cursor: 'default',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
 });
 
 export const selectedOptionButton = style([optionButton, {

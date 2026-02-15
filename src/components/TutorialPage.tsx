@@ -1,7 +1,6 @@
-// src/components/TutorialPage.tsx
 import React, { useState } from 'react';
 import QuestionTemplate from './QuestionTemplate';
-import StartWarning from './StartWarning'; // New Import
+import StartWarning from './StartWarning';
 import * as styles from './styles/TutorialPage.css';
 
 interface TutorialPageProps {
@@ -29,7 +28,6 @@ const TutorialPage: React.FC<TutorialPageProps> = ({ onComplete, onBack }) => {
     }
   };
 
-  // If in warning state, render the warning component instead of the tutorial
   if (showWarning) {
     return (
       <StartWarning 
@@ -39,11 +37,9 @@ const TutorialPage: React.FC<TutorialPageProps> = ({ onComplete, onBack }) => {
     );
   }
 
-  // Otherwise render the Tutorial flow
   return (
     <div className={styles.container}>
       
-      {/* --- TUTORIAL 1 --- */}
       {step === 1 && (
         <>
           <h2 className={styles.title}>Tutorial</h2>
@@ -55,6 +51,7 @@ const TutorialPage: React.FC<TutorialPageProps> = ({ onComplete, onBack }) => {
             questionId="T1" 
             basePath="psvtr-new-normalised" 
             onAnswer={() => {}} 
+            readonly={true}
           />
 
           <p className={styles.textBlock}>
@@ -63,7 +60,6 @@ const TutorialPage: React.FC<TutorialPageProps> = ({ onComplete, onBack }) => {
         </>
       )}
 
-      {/* --- TUTORIAL 2 --- */}
       {step === 2 && (
         <>
           <p className={styles.textBlock}>
@@ -74,6 +70,7 @@ const TutorialPage: React.FC<TutorialPageProps> = ({ onComplete, onBack }) => {
             questionId="T2" 
             basePath="psvtr-original-normalised" 
             onAnswer={() => {}} 
+            readonly={true}
           />
 
           <p className={styles.textBlock}>
@@ -82,7 +79,6 @@ const TutorialPage: React.FC<TutorialPageProps> = ({ onComplete, onBack }) => {
         </>
       )}
 
-      {/* --- NAVIGATION BUTTONS --- */}
       <div className={styles.buttonRow}>
         <button className={styles.prevButton} onClick={handlePrev}>
           {step === 1 ? 'Back' : 'Previous Example'}
