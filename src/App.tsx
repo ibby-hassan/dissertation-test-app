@@ -12,7 +12,7 @@ import {
   generateUserId,
   getSavedState, 
   STORAGE_KEY 
-} from "./utils/testUtils";
+} from "./utils";
 
 interface UserData {
   version: 'A' | 'B' | null;

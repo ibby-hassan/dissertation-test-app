@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import * as styles from './styles/TestComplete.css';
-import { STORAGE_KEY, RESET_COUNT_KEY, getSavedState } from '../utils/testUtils';
+import { STORAGE_KEY, RESET_COUNT_KEY, getSavedState } from '../utils';
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase";
 
