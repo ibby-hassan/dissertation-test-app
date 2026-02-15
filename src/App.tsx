@@ -84,20 +84,29 @@ function App() {
     const questionId = `Q${currentQuestion}`;
     console.log(`User Answered ${questionId}: ${answer} in ${timeTaken}ms`);
     
+    const isEven = currentQuestion % 2 === 0;
+    let styleType: 'lined' | 'shaded' = 'lined';
+
+    if (userData.version === 'A') {
+        styleType = isEven ? 'shaded' : 'lined';
+    } else {
+        styleType = isEven ? 'lined' : 'shaded';
+    }
+
     if (userData.userId && userData.version) {
       await submitQuestionAnswer(
         userData.userId,
         questionId,
         currentQuestion,
         answer,
-        timeTaken
+        timeTaken,
+        styleType
       );
     }
 
     if (currentQuestion < 30) {
       setCurrentQuestion((prev: number) => prev + 1);
     } else {
-      // Test Complete - Finalize DB Entry
       if (userData.userId) {
         finalizeTestSession(userData.userId);
       }

@@ -71,7 +71,8 @@ export const submitQuestionAnswer = async (
   questionId: string, 
   questionNumber: number,
   answer: string,
-  timeTakenMs: number
+  timeTakenMs: number,
+  style: 'lined' | 'shaded'
 ) => {
   const correctAnswer = CORRECT_ANSWERS[questionNumber];
   const isCorrect = answer.toLowerCase() === correctAnswer;
@@ -85,13 +86,14 @@ export const submitQuestionAnswer = async (
     correctAnswer,
     isCorrect,
     timeTakenMs,
+    style,
     timestamp: serverTimestamp(),
   };
 
   try {
     const responseRef = doc(db, "test_sessions", userId, "responses", paddedQuestionId);
     await setDoc(responseRef, payload);
-    console.log(`Submitted answer for ${paddedQuestionId}`);
+    console.log(`Submitted answer for ${paddedQuestionId} [${style}]`);
   } catch (e) {
     console.error("Error submitting answer: ", e);
   }

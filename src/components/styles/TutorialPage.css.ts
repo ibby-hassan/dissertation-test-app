@@ -40,7 +40,7 @@ export const title = style({
 })
 
 export const textBlock = style({
-  fontSize: '1.1rem',
+  fontSize: '1.15rem',
   textAlign: 'center',
   '@media': {
     [mobile]: {
