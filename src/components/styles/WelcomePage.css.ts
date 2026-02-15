@@ -20,7 +20,7 @@ export const container = style({
     [mobile]: {
       maxWidth: '90%',
       width: '100%',
-      padding: '0',
+      padding: '2vh 0',
       gap: '2vh',
       borderRadius: '0',
       boxShadow: 'none',

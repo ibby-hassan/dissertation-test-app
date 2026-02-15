@@ -18,7 +18,7 @@ export const container = style({
   '@media': {
     [mobile]: {
       maxWidth: '90%',
-      padding: '2vh',
+      padding: '2vh 0',
       borderRadius: '0',
       boxShadow: 'none',
       border: 'none',
@@ -44,7 +44,7 @@ export const textBlock = style({
   textAlign: 'center',
   '@media': {
     [mobile]: {
-      fontSize: '1.1rem',
+      fontSize: '0.9rem',
       lineHeight: '1.4'
     }
   }
@@ -77,7 +77,7 @@ const baseButton = style({
   '@media': {
     [mobile]: {
       width: '100%',
-      padding: '15px'
+      padding: '12px'
     }
   }
 });

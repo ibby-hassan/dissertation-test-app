@@ -20,7 +20,7 @@ export const container = style({
     [mobile]: {
       maxWidth: '90%',
       height: '100vh',
-      padding: '0',
+      padding: '2vh 0',
       borderRadius: '0',
       boxShadow: 'none',
       border: 'none',
@@ -35,7 +35,7 @@ export const title = style({
   marginBottom: '1vh',
   '@media': {
     [mobile]: {
-      fontSize: '2rem'
+      fontSize: '2em'
     }
   }
 });
@@ -44,10 +44,9 @@ export const text = style({
   fontSize: '1.2rem',
   color: '#374151',
   lineHeight: '1.75',
-  width: '80%',
   '@media': {
     [mobile]: {
-      fontSize: '1.1rem'
+      fontSize: '1rem'
     }
   }
 });
@@ -81,7 +80,7 @@ const baseButton = style({
   '@media': {
     [mobile]: {
       width: '100%',
-      padding: '15px'
+      padding: '12px'
     }
   }
 });
