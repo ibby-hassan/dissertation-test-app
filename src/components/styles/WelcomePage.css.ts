@@ -8,7 +8,7 @@ export const container = style({
   alignItems: 'center',
   justifyContent: 'center',
   fontFamily: 'sans-serif',
-  gap: '3vh',
+  gap: '2vh',
   backgroundColor: 'white',
   padding: '3rem',
   borderRadius: '10px',
@@ -32,10 +32,11 @@ export const container = style({
 });
 
 export const title = style({
-  fontSize: '3rem',
+  fontSize: '2rem',
   fontWeight: 'bold',
   marginBottom: '1vh',
   textAlign: 'center',
+  maxWidth: '75%',
   '@media': {
     [mobile]: {
       fontSize: '1.75rem',
@@ -45,10 +46,10 @@ export const title = style({
 });
 
 export const text = style({
-  fontSize: '1.2rem',
+  fontSize: '1.1rem',
   lineHeight: '1.75rem',
   textAlign: 'center',
-  maxWidth: '75%',
+  maxWidth: '90%',
   '@media': {
     [mobile]: {
       maxWidth: '100%',

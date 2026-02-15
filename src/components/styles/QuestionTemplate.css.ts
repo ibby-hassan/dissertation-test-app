@@ -1,4 +1,3 @@
-// src/components/styles/QuestionTemplate.css.ts
 import { style } from '@vanilla-extract/css';
 
 const mobile = 'screen and (max-width: 768px)';

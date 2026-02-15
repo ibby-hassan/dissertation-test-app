@@ -41,7 +41,7 @@ export const title = style({
 });
 
 export const text = style({
-  fontSize: '1.2rem',
+  fontSize: '1.1rem',
   color: '#374151',
   lineHeight: '1.75',
   '@media': {
