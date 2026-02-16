@@ -19,10 +19,13 @@ const WelcomePage: React.FC<WelcomePageProps> = ({ onStart }) => {
       <h1 className={styles.title}>2667185H's Dissertation: How Effective is a Computer-Rendered Version of the PSVT:R?</h1>
       <p className={styles.text}>
         Welcome to my (Ibrahim Hassan's) honour's project study. <br/>
-        The Purdue Spatial Visualisation Test of Rotations (PSVT:R) test is a measure of spatial reasoning widely used in STEM education to measure students' ability to mentally manipulate 3D objects. Success with the PSVT:R has been shown to be a predictor of success in STEM fields.<br />
-        This study aims to evaluate rendering software I have developed, and provide insight towards test automation solutions.<br/>
+        The Purdue Spatial Visualisation Test of Rotations (PSVT:R) is a measure of spatial reasoning widely used in STEM education. Success with the PSVT:R has been shown to be a predictor of success in STEM fields.<br />
+        This study aims to evaluate rendering software I have developed and provide insight towards test automation solutions.<br/>
         <br />
-        On selecting your test version, you will view two example questions, before conducting the test. More information on the test specifics are ahead.<br />
+        <strong>Test Structure:</strong> The test consists of <strong>30 questions</strong> in total, broken down into <strong>3 sets of 10</strong>. <br />
+        Your progress is <strong>saved automatically</strong> after every question, so you don't need to worry about losing data.<br />
+        <br />
+        On selecting your test version, you will view two example questions before conducting the assessed portion.<br />
         <br />
         I am available to be contacted any way, including by email: 2667185h@student.gla.ac.uk
       </p>

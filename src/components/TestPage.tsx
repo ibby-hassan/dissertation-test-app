@@ -19,12 +19,14 @@ const TestPage: React.FC<TestPageProps> = ({
 }) => {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [isReady, setIsReady] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false); // NEW: Local lock state
   
   const startTimeRef = useRef<number | null>(null);
 
   useEffect(() => {
     setSelectedAnswer(null);
     setIsReady(false);
+    setIsSubmitting(false); // Reset lock on new question
     startTimeRef.current = null;
   }, [questionId]);
 
@@ -34,7 +36,10 @@ const TestPage: React.FC<TestPageProps> = ({
   };
 
   const handleConfirm = () => {
+    if (isSubmitting) return; // Prevent double submission
+
     if (selectedAnswer && startTimeRef.current) {
+      setIsSubmitting(true); // Lock UI
       const endTime = Date.now();
       const timeTaken = endTime - startTimeRef.current;
       onConfirmAnswer(selectedAnswer, timeTaken);
@@ -42,6 +47,9 @@ const TestPage: React.FC<TestPageProps> = ({
   };
 
   const handleSkip = () => {
+    if (isSubmitting) return; // Prevent double submission
+    
+    setIsSubmitting(true); // Lock UI
     if (startTimeRef.current) {
         const endTime = Date.now();
         const timeTaken = endTime - startTimeRef.current;
@@ -81,9 +89,10 @@ const TestPage: React.FC<TestPageProps> = ({
           <QuestionTemplate 
             questionId={questionId}
             basePath={basePath}
-            onAnswer={setSelectedAnswer}
+            onAnswer={(ans) => !isSubmitting && setSelectedAnswer(ans)} // Disable selection during submit
             selectedAnswer={selectedAnswer}
             onAllImagesLoaded={handleImagesLoaded}
+            readonly={isSubmitting} // Pass readonly down
           />
         </div>
       </div>
@@ -92,15 +101,15 @@ const TestPage: React.FC<TestPageProps> = ({
         <button 
           className={styles.confirmButton} 
           onClick={handleConfirm}
-          disabled={!selectedAnswer || !isReady}
+          disabled={!selectedAnswer || !isReady || isSubmitting}
         >
-          Confirm Answer
+          {isSubmitting ? 'Saving...' : 'Confirm Answer'}
         </button>
 
         <button 
             className={styles.skipButton} 
             onClick={handleSkip}
-            disabled={!isReady}
+            disabled={!isReady || isSubmitting}
         >
             Skip Question
         </button>
