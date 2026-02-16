@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import WelcomePage from "./components/WelcomePage";
 import TutorialPage from "./components/TutorialPage";
 import TestPage from "./components/TestPage";
+import TestCheckpoint from "./components/TestCheckpoint";
 import TestComplete from "./components/TestComplete";
 import ImagePreloader from "./components/ImagePreloader";
 import * as styles from "./App.css";
@@ -20,12 +21,12 @@ interface UserData {
   username: string | null;
 }
 
-type AppStage = 'welcome' | 'tutorial' | 'test' | 'complete';
+type AppStage = 'welcome' | 'tutorial' | 'test' | 'checkpoint' | 'complete';
 
 function App() {
   // --- STATE INITIALIZATION ---
   const [stage, setStage] = useState<AppStage>(() => {
-    return getSavedState()?.stage || 'welcome';
+    return (getSavedState()?.stage as AppStage) || 'welcome';
   });
 
   const [userData, setUserData] = useState<UserData>(() => {
@@ -105,6 +106,11 @@ function App() {
     }
 
     if (currentQuestion < 30) {
+      // Logic for checkpoints: if we just finished Q10 or Q20
+      if (currentQuestion === 10 || currentQuestion === 20) {
+        setStage('checkpoint');
+      }
+      
       setCurrentQuestion((prev: number) => prev + 1);
     } else {
       if (userData.userId) {
@@ -112,6 +118,10 @@ function App() {
       }
       setStage('complete');
     }
+  };
+
+  const handleCheckpointContinue = () => {
+    setStage('test');
   };
 
   const getBasePath = (questionNum: number, version: 'A' | 'B') => {
@@ -154,6 +164,15 @@ function App() {
             />
           )}
         </>
+      )}
+
+      {/* Checkpoint Stage */}
+      {stage === 'checkpoint' && (
+        <TestCheckpoint 
+          onContinue={handleCheckpointContinue}
+          questionsCompleted={currentQuestion - 1} // currentQuestion has already incremented
+          totalQuestions={30}
+        />
       )}
 
       {stage === 'complete' && (

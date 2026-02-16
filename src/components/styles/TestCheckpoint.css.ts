@@ -19,31 +19,33 @@ export const container = style({
   '@media': {
     [mobile]: {
       maxWidth: '90%',
-      height: '100vh',
-      padding: '2vh 0',
+      padding: '2vh 1rem',
       borderRadius: '0',
       boxShadow: 'none',
       border: 'none',
+      marginTop: 'auto',
+      marginBottom: 'auto',
     }
   }
 });
 
 export const title = style({
-  fontSize: '2.5rem',
+  fontSize: '2rem',
   fontWeight: 'bold',
-  color: '#dc2626',
+  color: '#374151',
   marginBottom: '1vh',
   '@media': {
     [mobile]: {
-      fontSize: '2em'
+      fontSize: '1.75rem'
     }
   }
 });
 
 export const text = style({
-  fontSize: '1rem',
-  color: '#374151',
-  lineHeight: '1.5',
+  fontSize: '1.1rem',
+  color: '#4b5563',
+  lineHeight: '1.6',
+  marginBottom: '1vh',
   '@media': {
     [mobile]: {
       fontSize: '1rem'
@@ -51,52 +53,29 @@ export const text = style({
   }
 });
 
-export const boldText = style({
+export const progressHighlight = style({
   fontWeight: 'bold',
-  marginTop: '1vh',
+  color: '#2563eb',
 });
 
-export const buttonRow = style({
-  display: 'flex',
-  gap: '1rem',
+export const button = style({
   marginTop: '2vh',
-  '@media': {
-    [mobile]: {
-      flexDirection: 'column',
-      width: '100%',
-      gap: '1rem'
-    }
-  }
-});
-
-const baseButton = style({
-  padding: '1vw 2vw',
+  padding: '1.5vh 3vw',
   fontSize: '1.1rem',
   fontWeight: 'bold',
+  color: 'white',
+  backgroundColor: '#2563eb',
   border: 'none',
   borderRadius: '8px',
   cursor: 'pointer',
   transition: 'background-color 0.2s',
+  ':hover': {
+    backgroundColor: '#1d4ed8',
+  },
   '@media': {
     [mobile]: {
       width: '100%',
-      padding: '12px'
+      padding: '15px'
     }
   }
 });
-
-export const cancelButton = style([baseButton, {
-  backgroundColor: '#e5e7eb',
-  color: '#374151',
-  ':hover': {
-    backgroundColor: '#d1d5db'
-  }
-}]);
-
-export const confirmButton = style([baseButton, {
-  backgroundColor: '#dc2626',
-  color: 'white',
-  ':hover': {
-    backgroundColor: '#b91c1c'
-  }
-}]);

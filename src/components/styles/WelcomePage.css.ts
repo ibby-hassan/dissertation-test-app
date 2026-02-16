@@ -32,7 +32,7 @@ export const container = style({
 });
 
 export const title = style({
-  fontSize: '2rem',
+  fontSize: '1.75rem',
   fontWeight: 'bold',
   marginBottom: '1vh',
   textAlign: 'center',
@@ -46,8 +46,8 @@ export const title = style({
 });
 
 export const text = style({
-  fontSize: '1.1rem',
-  lineHeight: '1.75rem',
+  fontSize: '1rem',
+  lineHeight: '1.5rem',
   textAlign: 'center',
   maxWidth: '90%',
   '@media': {
@@ -73,7 +73,7 @@ export const inputContainer = style({
 });
 
 export const label = style({
-  fontSize: '1.1rem',
+  fontSize: '1rem',
   fontWeight: '600',
   color: '#374151',
   textAlign: 'left',
@@ -93,7 +93,7 @@ export const input = style({
 });
 
 export const helperText = style({
-  fontSize: '1rem',
+  fontSize: '0.75rem',
   color: '#6b7280',
   lineHeight: '1.4',
   marginTop: '0.2rem',

@@ -40,7 +40,8 @@ export const title = style({
 })
 
 export const textBlock = style({
-  fontSize: '1.15rem',
+  fontSize: '1rem',
+  lineHeight: '1.5',  
   textAlign: 'center',
   '@media': {
     [mobile]: {
@@ -67,7 +68,7 @@ export const buttonRow = style({
 });
 
 const baseButton = style({
-  padding: '12px 30px',
+  padding: '1.5vh 2vw',
   fontSize: '1.1rem',
   fontWeight: 'bold',
   border: 'none',
