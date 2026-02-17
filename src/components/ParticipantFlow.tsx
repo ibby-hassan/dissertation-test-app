@@ -5,7 +5,7 @@ import TestPage from "./TestPage";
 import TestCheckpoint from "./TestCheckpoint";
 import TestComplete from "./TestComplete";
 import ImagePreloader from "./ImagePreloader";
-import * as styles from "../App.css"; // We'll adjust the path slightly
+import * as styles from "../App.css"; 
 import { 
   initializeTestSession, 
   submitQuestionAnswer, 
@@ -56,8 +56,6 @@ function ParticipantFlow() {
   // --- HANDLERS ---
   const onStart = (usernameInput: string, version: 'A' | 'B') => {
     const finalUsername = usernameInput.trim() === "" ? "Anonymous" : usernameInput;
-    
-    // Generate ID NOW, using the username
     const newUserId = generateUserId(finalUsername);
 
     setUserData({ 
@@ -65,9 +63,6 @@ function ParticipantFlow() {
       version, 
       userId: newUserId 
     });
-    
-    // Initialize session in Firebase
-    initializeTestSession(newUserId, version);
     
     setStage('tutorial');
   };
@@ -77,6 +72,10 @@ function ParticipantFlow() {
   };
 
   const handleTutorialComplete = () => {
+    if (userData.userId && userData.version) {
+        initializeTestSession(userData.userId, userData.version);
+    }
+
     setStage('test');
     setCurrentQuestion(1);
   };
@@ -170,7 +169,7 @@ function ParticipantFlow() {
       {stage === 'checkpoint' && (
         <TestCheckpoint 
           onContinue={handleCheckpointContinue}
-          questionsCompleted={currentQuestion - 1} // currentQuestion has already incremented
+          questionsCompleted={currentQuestion - 1}
           totalQuestions={30}
         />
       )}

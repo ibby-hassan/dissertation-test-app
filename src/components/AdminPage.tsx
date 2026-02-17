@@ -17,10 +17,15 @@ interface TestStats {
   
   // Score Stats
   avgScore: number;
+  
+  // Style Breakdown
   linedCorrect: number;
   linedTotal: number;
+  linedTimeTotalMs: number; // NEW
+  
   shadedCorrect: number;
   shadedTotal: number;
+  shadedTimeTotalMs: number; // NEW
 }
 
 const AdminPage: React.FC = () => {
@@ -42,8 +47,10 @@ const AdminPage: React.FC = () => {
         avgScore: 0,
         linedCorrect: 0,
         linedTotal: 0,
+        linedTimeTotalMs: 0,
         shadedCorrect: 0,
-        shadedTotal: 0
+        shadedTotal: 0,
+        shadedTimeTotalMs: 0
       };
 
       let sumScore = 0;
@@ -72,8 +79,11 @@ const AdminPage: React.FC = () => {
             // Aggregate Lined/Shaded stats (from all users, even incomplete)
             s.linedCorrect += (summary.score_lined || 0);
             s.linedTotal += (summary.count_lined || 0);
+            s.linedTimeTotalMs += (summary.sum_time_lined || 0);
+
             s.shadedCorrect += (summary.score_shaded || 0);
             s.shadedTotal += (summary.count_shaded || 0);
+            s.shadedTimeTotalMs += (summary.sum_time_shaded || 0);
 
             // Aggregate Time per Question (from all users)
             sumTimeAllQuestions += (summary.total_time_ms || 0);
@@ -126,6 +136,12 @@ const AdminPage: React.FC = () => {
       return `${Math.round((num / total) * 100)}%`;
   };
 
+  // --- Helper for Avg Time per Item type ---
+  const getAvgTimeSec = (totalMs: number, count: number) => {
+      if (count === 0) return '0s';
+      return `${(totalMs / count / 1000).toFixed(1)}s`;
+  };
+
   if (loading) return <div className={styles.container}><p style={{textAlign: 'center'}}>Loading data...</p></div>;
   if (!stats) return null;
 
@@ -159,23 +175,7 @@ const AdminPage: React.FC = () => {
         </div>
       </div>
 
-      <div className={styles.sectionTitle}>Time Metrics</div>
-      <div className={styles.grid}>
-        <div className={styles.card}>
-            <span className={styles.cardLabel}>Avg Time (Test)</span>
-            <span className={styles.cardValue}>{formatTime(stats.avgTimePerTestMs)}</span>
-            <span className={styles.cardSubValue}>For completed tests</span>
-        </div>
-        <div className={styles.card}>
-            <span className={styles.cardLabel}>Avg Time (Item)</span>
-            <span className={styles.cardValue}>
-                {(stats.avgTimePerQuestionMs / 1000).toFixed(1)}s
-            </span>
-            <span className={styles.cardSubValue}>Per question</span>
-        </div>
-      </div>
-
-      <div className={styles.sectionTitle}>Performance by Style</div>
+      <div className={styles.sectionTitle}>Style Analysis</div>
       <div className={styles.grid}>
         <div className={styles.card}>
             <span className={styles.cardLabel}>Lined Accuracy</span>
@@ -191,19 +191,45 @@ const AdminPage: React.FC = () => {
             </span>
             <span className={styles.cardSubValue}>{stats.shadedCorrect}/{stats.shadedTotal} Correct</span>
         </div>
+        <div className={styles.card}>
+            <span className={styles.cardLabel}>Lined Time</span>
+            <span className={styles.cardValue}>
+                {getAvgTimeSec(stats.linedTimeTotalMs, stats.linedTotal)}
+            </span>
+            <span className={styles.cardSubValue}>Avg per question</span>
+        </div>
+        <div className={styles.card}>
+            <span className={styles.cardLabel}>Shaded Time</span>
+            <span className={styles.cardValue}>
+                {getAvgTimeSec(stats.shadedTimeTotalMs, stats.shadedTotal)}
+            </span>
+            <span className={styles.cardSubValue}>Avg per question</span>
+        </div>
       </div>
 
-      <div className={styles.sectionTitle}>Participant Distribution</div>
+      <div className={styles.sectionTitle}>General Metrics</div>
       <div className={styles.grid}>
+        <div className={styles.card}>
+            <span className={styles.cardLabel}>Avg Time (Test)</span>
+            <span className={styles.cardValue}>{formatTime(stats.avgTimePerTestMs)}</span>
+            <span className={styles.cardSubValue}>Completed tests</span>
+        </div>
+        <div className={styles.card}>
+            <span className={styles.cardLabel}>Avg Time (Item)</span>
+            <span className={styles.cardValue}>
+                {(stats.avgTimePerQuestionMs / 1000).toFixed(1)}s
+            </span>
+            <span className={styles.cardSubValue}>All questions</span>
+        </div>
         <div className={styles.card}>
           <span className={styles.cardLabel}>Version A</span>
           <span className={styles.cardValue}>{stats.versionA.completed}</span>
-          <span className={styles.cardSubValue}>{stats.versionA.started} Started</span>
+          <span className={styles.cardSubValue}>/ {stats.versionA.started} Started</span>
         </div>
         <div className={styles.card}>
           <span className={styles.cardLabel}>Version B</span>
           <span className={styles.cardValue}>{stats.versionB.completed}</span>
-          <span className={styles.cardSubValue}>{stats.versionB.started} Started</span>
+          <span className={styles.cardSubValue}>/ {stats.versionB.started} Started</span>
         </div>
       </div>
     </div>
