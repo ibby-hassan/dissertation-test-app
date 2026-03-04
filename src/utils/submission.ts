@@ -1,6 +1,6 @@
 import { db } from "../firebase";
 import { doc, setDoc, updateDoc, getDoc, serverTimestamp } from "firebase/firestore";
-import { CORRECT_ANSWERS } from "./constants";
+import { CORRECT_ANSWERS, CUSTOM_CORRECT_ANSWERS } from "./constants";
 
 export const submitQuestionAnswer = async (
   userId: string,
@@ -8,16 +8,22 @@ export const submitQuestionAnswer = async (
   questionNumber: number,
   answer: string,
   timeTakenMs: number,
-  style: 'lined' | 'shaded'
+  style: 'lined' | 'shaded',
+  testType: 'original' | 'custom' = 'original'
 ) => {
-  const correctAnswer = CORRECT_ANSWERS[questionNumber];
+  const answerBank = testType === 'original' ? CORRECT_ANSWERS : CUSTOM_CORRECT_ANSWERS;
+  const correctAnswer = answerBank[questionNumber];
   const isCorrect = answer.toLowerCase() === correctAnswer;
   const isSkipped = answer === "SKIPPED";
 
-  const paddedQuestionId = `Q${questionNumber.toString().padStart(2, '0')}`;
+  const finalQuestionId = testType === 'original' 
+    ? `Q${questionNumber.toString().padStart(2, '0')}` 
+    : questionId; 
+
+  const collectionName = testType === 'original' ? "test_sessions" : "custom_test_sessions";
 
   const payload = {
-    questionId: paddedQuestionId, 
+    questionId: finalQuestionId, 
     questionNumber,
     userAnswer: answer,
     correctAnswer,
@@ -28,13 +34,11 @@ export const submitQuestionAnswer = async (
   };
 
   try {
-    const sessionRef = doc(db, "test_sessions", userId);
-    const responseRef = doc(db, "test_sessions", userId, "responses", paddedQuestionId);
+    const sessionRef = doc(db, collectionName, userId);
+    const responseRef = doc(db, collectionName, userId, "responses", finalQuestionId);
     
-    // Write response
     await setDoc(responseRef, payload);
 
-    // Fetch and Update Summary
     const sessionSnap = await getDoc(sessionRef);
     if (sessionSnap.exists()) {
       const data = sessionSnap.data();
@@ -73,7 +77,6 @@ export const submitQuestionAnswer = async (
       s.avg_time_lined_ms = s.count_lined > 0 ? Math.round(s.sum_time_lined / s.count_lined) : 0;
 
       await updateDoc(sessionRef, { summary: s });
-      console.log(`Updated summary for ${paddedQuestionId}`);
     }
 
   } catch (e) {

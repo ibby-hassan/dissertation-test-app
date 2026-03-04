@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import WelcomePage from "./OriginalWelcomePage";
+import CustomWelcomePage from "./CustomWelcomePage";
 import TutorialPage from "./TutorialPage";
 import TestPage from "./TestPage";
 import TestCheckpoint from "./TestCheckpoint";
@@ -12,7 +12,8 @@ import {
   finalizeTestSession,
   generateUserId,
   getSavedState, 
-  STORAGE_KEY 
+  CUSTOM_STORAGE_KEY,
+  CUSTOM_QUESTION_ORDER
 } from "../utils";
 
 interface UserData {
@@ -23,14 +24,15 @@ interface UserData {
 
 type AppStage = 'welcome' | 'tutorial' | 'test' | 'checkpoint' | 'complete';
 
-function ParticipantFlow() {
-  // --- STATE INITIALIZATION ---
+function CustomParticipantFlow() {
+  const TOTAL_QUESTIONS = 12;
+
   const [stage, setStage] = useState<AppStage>(() => {
-    return (getSavedState()?.stage as AppStage) || 'welcome';
+    return (getSavedState('custom')?.stage as AppStage) || 'welcome';
   });
 
   const [userData, setUserData] = useState<UserData>(() => {
-    const savedData = getSavedState()?.userData;
+    const savedData = getSavedState('custom')?.userData;
     return { 
       version: savedData?.version || null,
       userId: savedData?.userId || null,
@@ -39,59 +41,33 @@ function ParticipantFlow() {
   });
 
   const [currentQuestion, setCurrentQuestion] = useState(() => {
-    return getSavedState()?.currentQuestion || 1;
+    return getSavedState('custom')?.currentQuestion || 1;
   });
 
-  // --- PERSISTENCE EFFECT ---
   useEffect(() => {
-    const stateToSave = {
-      stage,
-      userData,
-      currentQuestion
-    };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
+    const stateToSave = { stage, userData, currentQuestion };
+    localStorage.setItem(CUSTOM_STORAGE_KEY, JSON.stringify(stateToSave));
   }, [stage, userData, currentQuestion]);
 
-
-  // --- HANDLERS ---
   const onStart = (usernameInput: string, version: 'A' | 'B') => {
     const finalUsername = usernameInput.trim() === "" ? "Anonymous" : usernameInput;
     const newUserId = generateUserId(finalUsername);
 
-    setUserData({ 
-      username: finalUsername, 
-      version, 
-      userId: newUserId 
-    });
-    
+    setUserData({ username: finalUsername, version, userId: newUserId });
     setStage('tutorial');
-  };
-
-  const handleBackToWelcome = () => {
-    setStage('welcome');
   };
 
   const handleTutorialComplete = () => {
     if (userData.userId && userData.version) {
-        initializeTestSession(userData.userId, userData.version, 'original');
+        initializeTestSession(userData.userId, userData.version, 'custom');
     }
     setStage('test');
     setCurrentQuestion(1);
   };
 
   const handleAnswer = async (answer: string, timeTaken: number) => {
-    const questionId = `Q${currentQuestion}`;
-    console.log(`User Answered ${questionId}: ${answer} in ${timeTaken}ms`);
+    const questionId = CUSTOM_QUESTION_ORDER[currentQuestion - 1];
     
-    const isEven = currentQuestion % 2 === 0;
-    let styleType: 'lined' | 'shaded' = 'lined';
-
-    if (userData.version === 'A') {
-        styleType = isEven ? 'shaded' : 'lined';
-    } else {
-        styleType = isEven ? 'lined' : 'shaded';
-    }
-
     if (userData.userId && userData.version) {
       await submitQuestionAnswer(
         userData.userId,
@@ -99,49 +75,34 @@ function ParticipantFlow() {
         currentQuestion,
         answer,
         timeTaken,
-        styleType,
-        'original'
+        'lined', 
+        'custom'
       );
     }
 
-    if (currentQuestion < 30) {
-      if (currentQuestion === 10 || currentQuestion === 20) {
+    if (currentQuestion < TOTAL_QUESTIONS) {
+      if (currentQuestion === 6) {
         setStage('checkpoint');
       }
-      
       setCurrentQuestion((prev: number) => prev + 1);
     } else {
       if (userData.userId) {
-        finalizeTestSession(userData.userId, 'original');
+        finalizeTestSession(userData.userId, 'custom');
       }
       setStage('complete');
-    }
-  };
-
-  const handleCheckpointContinue = () => {
-    setStage('test');
-  };
-
-  const getBasePath = (questionNum: number, version: 'A' | 'B') => {
-    const isEven = questionNum % 2 === 0;
-
-    if (version === 'A') {
-      return isEven ? "psvtr-new-normalised" : "psvtr-original-normalised";
-    } else {
-      return isEven ? "psvtr-original-normalised" : "psvtr-new-normalised";
     }
   };
 
   return (
     <div className={styles.container}>
       {stage === 'welcome' && (
-        <WelcomePage onStart={onStart} />
+        <CustomWelcomePage onStart={onStart} />
       )}
 
       {stage === 'tutorial' && (
         <TutorialPage 
           onComplete={handleTutorialComplete} 
-          onBack={handleBackToWelcome}
+          onBack={() => setStage('welcome')}
         />
       )}
 
@@ -149,35 +110,34 @@ function ParticipantFlow() {
         <>
           <TestPage
             key={currentQuestion}
-            questionId={`Q${currentQuestion}`}
+            questionId={CUSTOM_QUESTION_ORDER[currentQuestion - 1]}
             questionNumber={currentQuestion}
-            totalQuestions={30}
-            basePath={getBasePath(currentQuestion, userData.version)}
+            totalQuestions={TOTAL_QUESTIONS}
+            basePath="psvtr-custom" 
             onConfirmAnswer={handleAnswer}
           />
-          {currentQuestion < 30 && (
+          {currentQuestion < TOTAL_QUESTIONS && (
             <ImagePreloader 
-              questionId={`Q${currentQuestion + 1}`}
-              basePath={getBasePath(currentQuestion + 1, userData.version)}
+              questionId={CUSTOM_QUESTION_ORDER[currentQuestion]}
+              basePath="psvtr-custom"
             />
           )}
         </>
       )}
-
-      {/* Checkpoint Stage */}
+      
       {stage === 'checkpoint' && (
         <TestCheckpoint 
-          onContinue={handleCheckpointContinue}
+          onContinue={() => setStage('test')}
           questionsCompleted={currentQuestion - 1}
-          totalQuestions={30}
+          totalQuestions={TOTAL_QUESTIONS}
         />
       )}
 
       {stage === 'complete' && (
-        <TestComplete testType="original" totalQuestions={30} />
+        <TestComplete testType="custom" totalQuestions={TOTAL_QUESTIONS} />
       )}
     </div>
   );
 }
 
-export default ParticipantFlow;
+export default CustomParticipantFlow;
