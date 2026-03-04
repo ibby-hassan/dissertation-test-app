@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import WelcomePage from "./WelcomePage";
+import WelcomePage from "./OriginalWelcomePage";
 import TutorialPage from "./TutorialPage";
 import TestPage from "./TestPage";
 import TestCheckpoint from "./TestCheckpoint";

@@ -1,12 +1,15 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ParticipantFlow from "./components/ParticipantFlow";
 import AdminPage from "./components/AdminPage";
+import LandingPage from "./components/LandingPage";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<ParticipantFlow />} />
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/original-shapes" element={<ParticipantFlow />} />
+        <Route path="/custom-shapes" element={<div style={{textAlign: 'center', marginTop: '50px'}}>Custom Shapes Test Component goes here</div>} />
         <Route path="/admin" element={<AdminPage />} />
       </Routes>
     </BrowserRouter>

@@ -1,6 +1,6 @@
 // src/components/WelcomePage.tsx
 import React, { useState } from 'react';
-import * as styles from './styles/WelcomePage.css';
+import * as styles from './styles/OriginalWelcomePage.css';
 
 interface WelcomePageProps {
   onStart: (username: string, version: 'A' | 'B') => void;
