@@ -81,9 +81,6 @@ function CustomParticipantFlow() {
     }
 
     if (currentQuestion < TOTAL_QUESTIONS) {
-      if (currentQuestion === 6) {
-        setStage('checkpoint');
-      }
       setCurrentQuestion((prev: number) => prev + 1);
     } else {
       if (userData.userId) {
@@ -103,6 +100,7 @@ function CustomParticipantFlow() {
         <TutorialPage 
           onComplete={handleTutorialComplete} 
           onBack={() => setStage('welcome')}
+          isCustomTest={true}
         />
       )}
 
@@ -123,14 +121,6 @@ function CustomParticipantFlow() {
             />
           )}
         </>
-      )}
-      
-      {stage === 'checkpoint' && (
-        <TestCheckpoint 
-          onContinue={() => setStage('test')}
-          questionsCompleted={currentQuestion - 1}
-          totalQuestions={TOTAL_QUESTIONS}
-        />
       )}
 
       {stage === 'complete' && (

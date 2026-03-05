@@ -150,3 +150,33 @@ export const disclaimer = style({
   color: '#9ca3af',
   textAlign: 'center'
 });
+
+export const backButton = style({
+  position: 'fixed',
+  top: '2vh',
+  left: '2vw',
+  background: 'transparent',
+  border: 'none',
+  color: '#6b7280',
+  fontSize: '1rem',
+  fontWeight: 'bold',
+  cursor: 'pointer',
+  padding: '10px 15px',
+  borderRadius: '8px',
+  transition: 'all 0.2s ease',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '0.5rem',
+  ':hover': {
+    backgroundColor: '#e5e7eb',
+    color: '#374151'
+  },
+  '@media': {
+    [mobile]: {
+      top: '1vh',
+      left: '1vw',
+      fontSize: '0.9rem',
+      padding: '8px 12px',
+    }
+  }
+});

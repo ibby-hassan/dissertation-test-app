@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import * as styles from './styles/OriginalWelcomePage.css';
+import { useNavigate } from 'react-router-dom';
 
 interface CustomWelcomePageProps {
   onStart: (username: string, version: 'A' | 'B') => void;
@@ -7,6 +8,7 @@ interface CustomWelcomePageProps {
 
 const CustomWelcomePage: React.FC<CustomWelcomePageProps> = ({ onStart }) => {
   const [username, setUsername] = useState('');
+  const navigate = useNavigate();
 
   const handleStart = () => {
     onStart(username.trim(), 'A');
@@ -14,6 +16,11 @@ const CustomWelcomePage: React.FC<CustomWelcomePageProps> = ({ onStart }) => {
 
   return (
     <div className={styles.container}>
+
+      <button className={styles.backButton} onClick={() => navigate('/')}>
+        &larr; Back to Home
+      </button>
+      
       <h1 className={styles.title}>Custom Spatial Reasoning Test</h1>
       <p className={styles.text}>
         Welcome to the custom shapes assessment portion of the study.<br/>

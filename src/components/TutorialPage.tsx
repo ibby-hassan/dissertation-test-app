@@ -6,15 +6,20 @@ import * as styles from './styles/TutorialPage.css';
 interface TutorialPageProps {
   onComplete: () => void;
   onBack: () => void;
+  isCustomTest?: boolean; // NEW
 }
 
-const TutorialPage: React.FC<TutorialPageProps> = ({ onComplete, onBack }) => {
+const TutorialPage: React.FC<TutorialPageProps> = ({ onComplete, onBack, isCustomTest = false }) => {
   const [step, setStep] = useState(1);
   const [showWarning, setShowWarning] = useState(false);
 
   const handleNext = () => {
     if (step === 1) {
-      setStep(2);
+      if (isCustomTest) {
+        setShowWarning(true);
+      } else {
+        setStep(2);
+      }
     } else {
       setShowWarning(true);
     }
@@ -60,7 +65,7 @@ const TutorialPage: React.FC<TutorialPageProps> = ({ onComplete, onBack }) => {
         </>
       )}
 
-      {step === 2 && (
+      {step === 2 && !isCustomTest && (
         <>
           <p className={styles.textBlock}>
             Here is a second example. Notice that the rotation is on a different axis.
@@ -86,7 +91,7 @@ const TutorialPage: React.FC<TutorialPageProps> = ({ onComplete, onBack }) => {
         
         {step === 1 ? (
             <button className={styles.nextButton} onClick={handleNext}>
-                Next Example
+                {isCustomTest ? 'Continue' : 'Next Example'}
             </button>
         ) : (
             <button className={styles.nextButton} onClick={handleNext}>

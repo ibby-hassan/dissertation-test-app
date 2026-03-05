@@ -1,6 +1,6 @@
-// src/components/WelcomePage.tsx
 import React, { useState } from 'react';
 import * as styles from './styles/OriginalWelcomePage.css';
+import { useNavigate } from 'react-router-dom';
 
 interface WelcomePageProps {
   onStart: (username: string, version: 'A' | 'B') => void;
@@ -8,14 +8,18 @@ interface WelcomePageProps {
 
 const WelcomePage: React.FC<WelcomePageProps> = ({ onStart }) => {
   const [username, setUsername] = useState('');
+  const navigate = useNavigate();
 
   const handleStart = (version: 'A' | 'B') => {
-    // Proceed regardless of whether username is empty or not
     onStart(username.trim(), version);
   };
 
   return (
     <div className={styles.container}>
+      <button className={styles.backButton} onClick={() => navigate('/')}>
+        &larr; Back to Home
+      </button>
+
       <h1 className={styles.title}>2667185H's Dissertation: How Effective is a Computer-Rendered Version of the PSVT:R?</h1>
       <p className={styles.text}>
         Welcome to my (Ibrahim Hassan's) honour's project study. <br/>
@@ -30,7 +34,6 @@ const WelcomePage: React.FC<WelcomePageProps> = ({ onStart }) => {
         I am available to be contacted any way, including by email: 2667185h@student.gla.ac.uk
       </p>
 
-      {/* Name Input */}
       <div className={styles.inputContainer}>
         <label htmlFor="username" className={styles.label}>Name (Optional)</label>
         <input 

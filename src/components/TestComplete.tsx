@@ -45,7 +45,8 @@ const TestComplete: React.FC<TestCompleteProps> = ({ testType, totalQuestions })
     localStorage.removeItem(key);
     const currentCount = parseInt(localStorage.getItem(RESET_COUNT_KEY) || '0', 10);
     localStorage.setItem(RESET_COUNT_KEY, (currentCount + 1).toString());
-    window.location.reload();
+    
+    window.location.href = '/'; 
   };
 
   return (
