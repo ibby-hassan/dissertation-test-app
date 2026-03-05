@@ -13,6 +13,28 @@ export const initializeTestSession = async (
   const resetCount = parseInt(localStorage.getItem(RESET_COUNT_KEY) || '0', 10);
   const collectionName = testType === 'original' ? "test_sessions" : "custom_test_sessions";
 
+  const baseSummary = {
+    score_total: 0,      
+    total_answered: 0,   
+    count_skipped: 0,
+    total_time_ms: 0,
+    avg_time_total_ms: 0,
+    reset_count: resetCount
+  };
+
+  const styleMetrics = testType === 'original' ? {
+    score_shaded: 0,
+    score_lined: 0,
+    sum_time_shaded: 0,
+    count_shaded: 0,
+    sum_time_lined: 0,
+    count_lined: 0,
+    avg_time_shaded_ms: 0,
+    avg_time_lined_ms: 0,
+  } : {};
+
+  const initialSummary = { ...baseSummary, ...styleMetrics };
+
   try {
     await setDoc(doc(db, collectionName, userId), {
       version,
@@ -20,22 +42,7 @@ export const initializeTestSession = async (
       userAgent,
       status: 'in_progress', 
       startedAt: serverTimestamp(),
-      summary: {
-        score_total: 0,      
-        total_answered: 0,   
-        count_skipped: 0,
-        total_time_ms: 0,
-        score_shaded: 0,
-        score_lined: 0,
-        sum_time_shaded: 0,
-        count_shaded: 0,
-        sum_time_lined: 0,
-        count_lined: 0,
-        avg_time_total_ms: 0,
-        avg_time_shaded_ms: 0,
-        avg_time_lined_ms: 0,
-        reset_count: resetCount
-      }
+      summary: initialSummary
     });
     console.log(`${testType} Session initialized: ${userId}`);
   } catch (e) {

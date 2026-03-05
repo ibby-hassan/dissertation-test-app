@@ -43,13 +43,10 @@ export const submitQuestionAnswer = async (
     if (sessionSnap.exists()) {
       const data = sessionSnap.data();
       const s = data.summary || { 
-        score_total: 0, total_answered: 0, count_skipped: 0, total_time_ms: 0, 
-        score_shaded: 0, score_lined: 0, 
-        sum_time_shaded: 0, count_shaded: 0, sum_time_lined: 0, count_lined: 0,
-        reset_count: 0 
+        score_total: 0, total_answered: 0, count_skipped: 0, total_time_ms: 0, reset_count: 0 
       };
 
-      // -- UPDATE METRICS --
+      // -- UPDATE CORE METRICS (BOTH TESTS) --
       s.total_time_ms = (s.total_time_ms || 0) + timeTakenMs;
 
       if (isSkipped) {
@@ -59,22 +56,27 @@ export const submitQuestionAnswer = async (
         if (isCorrect) s.score_total = (s.score_total || 0) + 1;
       }
 
-      if (style === 'shaded') {
-        s.sum_time_shaded = (s.sum_time_shaded || 0) + timeTakenMs;
-        s.count_shaded = (s.count_shaded || 0) + 1;
-        if (isCorrect && !isSkipped) s.score_shaded = (s.score_shaded || 0) + 1;
-      } else {
-        s.sum_time_lined = (s.sum_time_lined || 0) + timeTakenMs;
-        s.count_lined = (s.count_lined || 0) + 1;
-        if (isCorrect && !isSkipped) s.score_lined = (s.score_lined || 0) + 1;
+      // -- UPDATE STYLE METRICS (ORIGINAL TEST ONLY) --
+      if (testType === 'original') {
+        if (style === 'shaded') {
+          s.sum_time_shaded = (s.sum_time_shaded || 0) + timeTakenMs;
+          s.count_shaded = (s.count_shaded || 0) + 1;
+          if (isCorrect && !isSkipped) s.score_shaded = (s.score_shaded || 0) + 1;
+        } else {
+          s.sum_time_lined = (s.sum_time_lined || 0) + timeTakenMs;
+          s.count_lined = (s.count_lined || 0) + 1;
+          if (isCorrect && !isSkipped) s.score_lined = (s.score_lined || 0) + 1;
+        }
       }
 
       // -- RECALCULATE AVERAGES --
       const totalSeen = (s.total_answered || 0) + (s.count_skipped || 0);
       s.avg_time_total_ms = totalSeen > 0 ? Math.round(s.total_time_ms / totalSeen) : 0;
       
-      s.avg_time_shaded_ms = s.count_shaded > 0 ? Math.round(s.sum_time_shaded / s.count_shaded) : 0;
-      s.avg_time_lined_ms = s.count_lined > 0 ? Math.round(s.sum_time_lined / s.count_lined) : 0;
+      if (testType === 'original') {
+        s.avg_time_shaded_ms = s.count_shaded > 0 ? Math.round(s.sum_time_shaded / s.count_shaded) : 0;
+        s.avg_time_lined_ms = s.count_lined > 0 ? Math.round(s.sum_time_lined / s.count_lined) : 0;
+      }
 
       await updateDoc(sessionRef, { summary: s });
     }
